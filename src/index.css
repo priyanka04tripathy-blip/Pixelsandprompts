@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@theme {
+  --color-black: #080810;
+  --color-card-bg: #0e0e1a;
+  --color-blue-accent: #2C48D4;
+  --color-pink-accent: #FF67FF;
+  --color-deep-blue: #1D1D7F;
+  --color-electric-blue: #00AEEF;
+  --color-white: #FFFFFF;
+  --color-muted: rgba(255,255,255,0.45);
+  --color-body-text: rgba(255,255,255,0.68);
+
+  --font-display: "Fraunces", "Space Grotesk", serif;
+  --font-handwritten: "Caveat", cursive;
+  --font-body: "DM Sans", "Plus Jakarta Sans", sans-serif;
+}
+
+@layer utilities {
+  .text-gradient-heading {
+    background: linear-gradient(135deg, #2C48D4, #00AEEF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bg-gradient-button {
+    background: linear-gradient(135deg, #FF67FF, #2C48D4);
+  }
+  .bg-gradient-accent {
+    background: linear-gradient(135deg, #00AEEF, #FF67FF);
+  }
+}
+
+/* Custom scrollbar and cursors */
+@media (min-width: 1024px) {
+  body {
+    cursor: none;
+  }
+  a, button, [role="button"], input, select, textarea {
+    cursor: none;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #080810;
+}
+::-webkit-scrollbar-thumb {
+  background: #2C48D4;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF67FF;
+}
+
+/* Keyframes for gradient light waves */
+@keyframes drift {
+  0% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1) rotate(120deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9) rotate(240deg);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1) rotate(360deg);
+  }
+}
+
+.animate-drift-slow-1 {
+  animation: drift 14s ease-in-out infinite alternate;
+}
+
+.animate-drift-slow-2 {
+  animation: drift 10s ease-in-out infinite alternate-reverse;
+}
+
+.animate-drift-slow-3 {
+  animation: drift 18s ease-in-out infinite alternate;
+}
+
+/* Ticker loop translation */
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 25s linear infinite;
+}
+
+/* Scroll reveal class (if standard fallback is needed) */
+.reveal-element {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-element.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Down The Rabbit Hole | Pixels & Prompts Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Caveat:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#080810',
+                        card: '#0e0e1a',
+                        blue: '#2C48D4',
+                        pink: '#FF67FF',
+                        deep: '#1D1D7F',
+                        eblue: '#00AEEF',
+                        white: '#FFFFFF',
+                    },
+                    fontFamily: {
+                        sans: ["DM Sans", "Plus Jakarta Sans", "sans-serif"],
+                        display: ["Fraunces", "Space Grotesk", "serif"],
+                        handwritten: ["Caveat", "cursive"],
+                        body: ["DM Sans", "Plus Jakarta Sans", "sans-serif"],
+                    }
+                }
+            }
+        }
+        function handleHeroImageError(img) {
+            const unsplashUrl = "https://images.unsplash.com/photo-1620122303020-43ec4b6cf7f8?q=80&w=800&auto=format&fit=crop";
+            if (img && img.src && !img.src.includes("unsplash.com")) {
+                img.src = unsplashUrl;
+            } else if (img) {
+                img.style.display = 'none';
+                const fb = document.getElementById('hero-img-fallback');
+                if (fb) fb.classList.remove('hidden');
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --pink: #FF67FF;
+            --eblue: #00AEEF;
+            --blue: #2C48D4;
+        }
+        body {
+            background-color: #080810;
+            color: #FFFFFF;
+            font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--pink);
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+        
+        .custom-cursor-ring {
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid var(--pink);
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%) scale(1);
+            transition: transform 0.2s ease-out, border-color 0.3s;
+        }
+
+        /* Ambient Blobs Animation */
+        @keyframes drift {
+            0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+            33% { transform: translate(40px, -50px) scale(1.1) rotate(90deg); }
+            66% { transform: translate(-30px, 30px) scale(0.95) rotate(180deg); }
+            100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
+        }
+        
+        .blob-electric-blue {
+            animation: drift 14s ease-in-out infinite alternate;
+        }
+        .blob-pink {
+            animation: drift 10s ease-in-out infinite alternate-reverse;
+        }
+        .blob-deep-blue {
+            animation: drift 12s ease-in-out infinite alternate;
+        }
+
+        /* Hide Scrollbar for tabs container on mobile */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        /* Intersection Observer transition presets */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Image Placeholder Spec Styling */
+        .image-placeholder {
+            background-color: rgba(14, 14, 26, 0.6);
+            border: 2px dashed rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .image-placeholder:hover {
+            border-style: solid;
+            border-color: rgba(255, 103, 255, 0.4);
+            background-color: rgba(255, 103, 255, 0.04);
+            box-shadow: 0 0 30px rgba(255, 103, 255, 0.08);
+        }
+
+        .image-placeholder-label {
+            font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif;
+            font-weight: 400;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 24px;
+            pointer-events: none;
+        }
+
+        /* Smooth scroll overrides */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="antialiased select-none md:select-text selection:bg-pink selection:text-black">
+
+    <!-- Scroll Top Progress Line -->
+    <div class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-[#2C48D4] via-[#00AEEF] to-[#FF67FF] z-[999] transition-all duration-75" id="scroll-progress-bar" style="width: 0%;"></div>
+
+    <!-- Custom Cursor elements -->
+    <div class="custom-cursor-dot hidden lg:block" id="cursor-dot"></div>
+    <div class="custom-cursor-ring hidden lg:block" id="cursor-ring"></div>
+
+
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 z-50 p-4 border border-white/10 bg-black/80 hover:bg-pink text-white hover:text-black hover:border-pink rounded-full opacity-0 translate-y-10 pointer-events-none transition-all duration-300 shadow-xl" aria-label="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+        </svg>
+    </button>
+
+    <!-- STICKY HEADER -->
+    <header id="sticky-header" class="fixed top-0 left-0 right-0 h-16 z-50 flex items-center px-6 md:px-12 transition-all duration-300">
+        <div class="w-full max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Left Side Logo -->
+            <a href="/index.html" class="flex items-center gap-3 font-display font-extrabold text-[20px] md:text-2xl tracking-tighter text-[#00AEEF] hover:opacity-95 transition-opacity">
+                <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradDtrhNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00CEFF" />
+                            <stop offset="35%" stop-color="#2E4AEC" />
+                            <stop offset="75%" stop-color="#9C20FE" />
+                            <stop offset="100%" stop-color="#E23EFF" />
+                        </linearGradient>
+                        <pattern id="logoGridDtrhNav" width="4.1667" height="4.1667" patternUnits="userSpaceOnUse">
+                            <rect width="4.1667" height="4.1667" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="0.5" />
+                        </pattern>
+                        <clipPath id="logoClipDtrhNav">
+                            <circle cx="50" cy="50" r="46" />
+                        </clipPath>
+                    </defs>
+                    <g clip-path="url(#logoClipDtrhNav)">
+                        <circle cx="50" cy="50" r="46" fill="url(#logoGradDtrhNav)" />
+                        <rect x="0" y="0" width="100" height="100" fill="url(#logoGridDtrhNav)" />
+                    </g>
+                    <rect x="50.3500" y="25.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="29.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="29.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="37.8500" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="33.6833" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="37.8500" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="29.5167" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="33.6833" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="37.8500" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="62.8500" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="29.5167" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="33.6833" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="58.6833" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="62.8500" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="29.5167" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="54.5167" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="58.6833" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="62.8500" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="54.5167" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="58.6833" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="54.5167" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="71.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="71.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="75.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                </svg>
+                <span class="bg-gradient-to-r from-[#2C48D4] via-[#00AEEF] to-[#FF67FF] bg-clip-text text-transparent">Pixels & Prompts</span>
+            </a>
+
+            <!-- Center smooth scroll links -->
+            <div class="hidden md:flex items-center gap-6 lg:gap-8">
+                <a href="#overview" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">The Problem</a>
+                <a href="#results" class="font-sans font-medium text-[#FF67FF] hover:text-[#FF67FF] text-[13px] tracking-wide transition-colors duration-200">The Growth</a>
+                <a href="#approach" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">Our Strategy</a>
+                <a href="#creative" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">The Work</a>
+                <a href="#ad-results" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">Ad Results</a>
+                <a href="#testimonial" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">Testimonial</a>
+            </div>
+
+            <!-- Right Side CTA Pill -->
+            <div>
+                <a href="https://calendly.com/pixelsnprompts/30min" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] hover:shadow-[0_0_20px_rgba(255,103,255,0.45)] text-white font-display font-bold text-xs uppercase tracking-wider transition-all duration-300 block">
+                    Work With Us
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT BACKDROP WRAPPER -->
+    <main class="w-full relative z-10">
+
+        <!-- SECTION 1: HERO -->
+        <section class="max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-24 md:pb-32">
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 mb-8 font-sans text-xs uppercase tracking-widest text-[#FFFFFF]/45 scroll-reveal active">
+                <a href="/index.html" class="hover:text-white transition-colors">Pixels & Prompts</a>
+                <span>→</span>
+                <a href="/index.html#work" class="hover:text-white transition-colors">Our Work</a>
+                <span>→</span>
+                <span class="text-[#FF67FF]">Down The Rabbit Hole</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <!-- Left Column (60% width) -->
+                <div class="lg:col-span-7 flex flex-col items-start select-text scroll-reveal active">
+                    <!-- Tag badge row -->
+                    <div class="flex flex-wrap gap-3 mb-6">
+                        <span class="px-4 py-1.5 rounded-full bg-eblue/15 text-eblue font-handwritten text-xl font-bold tracking-wide">Instagram From Scratch</span>
+                        <span class="px-4 py-1.5 rounded-full bg-pink/15 text-pink font-handwritten text-xl font-bold tracking-wide">Content Strategy</span>
+                        <span class="px-4 py-1.5 rounded-full bg-eblue/15 text-eblue font-handwritten text-xl font-bold tracking-wide">Paid Ads</span>
+                    </div>
+
+                    <!-- Main stagger headlines -->
+                    <h1 class="font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#00AEEF] via-[#FF67FF] to-[#00AEEF] leading-tight tracking-tight mb-6 uppercase text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">
+                        Down The Rabbit Hole
+                    </h1>
+
+                    <p class="font-sans text-[17px] md:text-[18px] text-[#FFFFFF]/65 leading-relaxed mb-8 max-w-[580px]">
+                        A whimsical, Alice in Wonderland-inspired indoor play area and child activity hub in Bangalore. We helped turn a quiet physical space into a bustling, must-visit family destination, starting from absolute zero.
+                    </p>
+
+                    <!-- Meta row -->
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-4 font-sans text-xs md:text-sm text-[#FFFFFF]/45 border-t border-white/10 pt-6 min-w-full lg:min-w-0">
+                        <span class="flex items-center gap-1.5"><strong class="text-pink font-mono uppercase bg-[#FF67FF]/10 px-2.5 py-1 rounded border border-[#FF67FF]/15">Duration: 4 Months</strong></span>
+                        <span class="hidden sm:inline text-white/20">|</span>
+                        <span class="flex items-center gap-1.5"><strong class="text-[#FF67FF] font-mono uppercase bg-[#FF67FF]/10 px-2.5 py-1 rounded border border-[#FF67FF]/15">Role: Organic + Paid Meta Campaigns</strong></span>
+                        <span class="hidden sm:inline text-white/20">|</span>
+                        <span class="flex items-center gap-1.5"><strong class="text-[#FF67FF] font-mono uppercase bg-[#FF67FF]/10 px-2.5 py-1 rounded border border-[#FF67FF]/15">Loc: Bangalore, India</strong></span>
+                    </div>
+                </div>
+
+                <!-- Right Column / Hero Portrait (40% width) -->
+                <div class="lg:col-span-5 relative w-full flex justify-center">
+                    <!-- Subtle Glow Backdrop -->
+                    <div class="absolute -inset-2.5 bg-gradient-to-tr from-[#00AEEF] to-[#FF67FF] rounded-[24px] blur-xl opacity-30 animate-pulse pointer-events-none"></div>
+
+                    <!-- Portrait frame styled as dynamic Polaroid/sticker from homepage, mirroring Dr Sheela's case study -->
+                    <div class="relative w-full max-w-[420px] aspect-[3/4] rounded-2xl overflow-hidden bg-white p-1.5 border-[5px] border-white shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform -rotate-[1.5deg] hover:rotate-0 hover:scale-[1.03] transition-all duration-300 group"
+                         style="box-shadow: 0 12px 28px rgba(0,0,0,0.4), 0 0 35px rgba(255,103,255,0.25)">
+                        <img src="https://lh3.googleusercontent.com/d/16yITUKF52aix5UoAFTp02D6xRfWMrjo4" 
+                             class="absolute inset-0 w-full h-full object-cover object-top rounded-lg grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500" 
+                             referrerpolicy="no-referrer"
+                             id="hero-img-element"
+                             onerror="handleHeroImageError(this)"
+                             alt="Adithi Sarovar professional portrait" />
+                        
+                        <!-- High-Fidelity Fallback if image not uploaded/local -->
+                        <div id="hero-img-fallback" class="absolute inset-0 bg-[#0c0c16] flex flex-col justify-between p-6 md:p-8 z-10 rounded-lg hidden">
+                            <!-- Background pattern of chess or wonderland -->
+                            <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(circle at 10% 20%, rgba(255,103,255,0.4) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(0,174,239,0.4) 0%, transparent 40%);"></div>
+                            
+                            <!-- Top indicators -->
+                            <div class="flex items-center justify-between z-10 w-full">
+                                <span class="bg-black/85 px-3 py-1 rounded-full border border-pink/30 font-mono text-[9px] text-[#FF67FF] uppercase tracking-wider">
+                                    Adithi Sarovar
+                                </span>
+                                <span class="text-white/40 text-xs font-mono">DTRH_FOUNDER</span>
+                            </div>
+
+                            <!-- Content illustration/Avatar representation -->
+                            <div class="my-auto z-10 text-center space-y-4 w-full">
+                                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-pink to-blue p-[2px] mx-auto shadow-xl">
+                                    <div class="w-full h-full rounded-full bg-black flex items-center justify-center font-display font-black text-2xl text-pink selection:bg-pink">
+                                        AS
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <h4 class="font-display font-extrabold text-white text-lg tracking-tight uppercase leading-none">Adithi Sarovar</h4>
+                                    <p class="font-sans text-xs text-[#00AEEF] font-semibold leading-none">Founder, Down The Rabbit Hole</p>
+                                </div>
+                                <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-xs font-sans max-w-[280px] mx-auto">
+                                    <p class="text-white/80 leading-normal italic">Clicking this portrait will enlarge her photo template when loaded locally.</p>
+                                </div>
+                            </div>
+
+                            <!-- Bottom caption -->
+                            <div class="border-t border-white/5 pt-4 z-10 flex justify-between items-center text-[10px] text-white/40 w-full font-mono">
+                                <span class="italic">Founding Director</span>
+                                <span class="font-bold text-pink">Bangalore, IN</span>
+                            </div>
+                        </div>
+
+                        <!-- Overlay overlay gradient (visible on top of the live picture if loaded) -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#080810]/95 via-[#080810]/20 to-transparent flex flex-col justify-end p-6 md:p-8 pointer-events-none z-10 rounded-lg">
+                            <span class="font-handwritten text-xl text-[#00AEEF] block mb-1">Founder & Managing Director</span>
+                            <h3 class="font-display font-extrabold text-base md:text-lg text-white uppercase tracking-tight leading-none mb-1">Adithi Sarovar</h3>
+                            <p class="text-[9px] font-mono text-white/40 uppercase tracking-widest leading-none">Down The Rabbit Hole Playground</p>
+                        </div>
+                        
+                        <!-- Mini marker badge -->
+                        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/5 font-mono text-[9px] text-[#FF67FF] uppercase tracking-widest z-10">
+                            Founder Spotlight
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: RESULTS SNAPSHOT (id="results") -->
+        <section id="results" class="bg-card w-full py-24 select-text border-y border-white/5 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-12 md:mb-16 scroll-reveal">
+                    <span class="font-handwritten text-[#FF67FF] text-2xl font-semibold block mb-2">→ The Results</span>
+                    <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-3xl md:text-5xl tracking-tight leading-tight">
+                        Four months from absolute zero. <br />Here is what we built together.
+                    </h2>
+                </div>
+
+                <!-- 4 Counter Stat Cards in responsive grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-16">
+                    <!-- Stat Card 1 -->
+                    <div class="bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.08)] transition-all duration-300 scroll-reveal">
+                        <div class="text-[#FF67FF] opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-dasharray="2 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m16 12-4-4-4 4" />
+                                <path d="M12 16V8" />
+                            </svg>
+                        </div>
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-1.5">
+                            <span class="count-up" data-target="300000">0</span><span class="text-pink">+</span>
+                        </div>
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-xs uppercase tracking-wider block mt-3">
+                            Total Accounts Reached
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 2 -->
+                    <div class="bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-[#00AEEF]/30 hover:shadow-[0_10px_30px_rgba(0,174,239,0.08)] transition-all duration-300 scroll-reveal">
+                        <div class="text-[#00AEEF] opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <line x1="19" y1="8" x2="19" y2="14" />
+                                <line x1="22" y1="11" x2="16" y2="11" />
+                            </svg>
+                        </div>
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-1.5">
+                            <span class="count-up" data-target="360">0</span><span class="text-eblue">+</span>
+                        </div>
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-xs uppercase tracking-wider block mt-3">
+                            Quality Followers Gained
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 3 -->
+                    <div class="bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.08)] transition-all duration-300 scroll-reveal">
+                        <div class="text-[#FF67FF] opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                        </div>
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-1.5">
+                            <span class="count-up" data-target="100">0</span><span class="text-pink">+</span>
+                        </div>
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-xs uppercase tracking-wider block mt-3">
+                            Direct Bookings & inquiries
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 4 -->
+                    <div class="bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-[#00AEEF]/30 hover:shadow-[0_10px_30px_rgba(0,174,239,0.08)] transition-all duration-300 scroll-reveal">
+                        <div class="text-[#00AEEF] opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m12 8-4 4 4 4" />
+                                <path d="m16 12-4-4" />
+                            </svg>
+                        </div>
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-1.5">
+                            <span class="count-up" data-target="5198">0</span>
+                        </div>
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-xs uppercase tracking-wider block mt-3">
+                            Targeted Paid Ad Clicks
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Snapshot Image Placeholder Panel -->
+                <div class="scroll-reveal my-12 bg-[#0c0c16] border border-white/5 rounded-[24px] overflow-hidden p-6 md:p-8">
+                    <span class="text-xs uppercase font-mono tracking-widest text-pink mb-4 block">Visual Evidence</span>
+                    <div onclick="openLightboxPlaceholder('Organic Reach Growth and Views Analytics', 'Real snapshots displaying vertical view counters, reach demographics, and reel metrics showing a qualitative climb in Bangalore parent engagement, culminating in over 250K views inside 30 days.')" 
+                         class="image-placeholder rounded-xl w-full aspect-[21/9] min-h-[300px] flex flex-col items-center justify-center cursor-pointer relative">
+                        
+                        <!-- Live Image if uploaded -->
+                        <img src="images/ig_insights_views_30days.png" 
+                             alt="Organic Insights Screenshots" 
+                             class="absolute inset-0 w-full h-full object-cover z-20 hover:scale-[1.01] transition-transform duration-500"
+                             id="analytics-img-element"
+                             onerror="this.style.display='none'; document.getElementById('analytics-img-fallback').classList.remove('hidden');" />
+                        
+                        <!-- Premium Fallback Dashboard -->
+                        <div id="analytics-img-fallback" class="absolute inset-0 bg-[#0e0e1a]/90 flex flex-col justify-between p-6 md:p-8 z-10 w-full h-full">
+                            <!-- Dashboard Header -->
+                            <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-pink animate-pulse"></div>
+                                    <span class="font-mono text-xs uppercase tracking-wider text-white">Instagram Business Insights Snapshot</span>
+                                </div>
+                                <span class="text-[10px] bg-[#FF67FF]/10 text-pink px-2 py-0.5 rounded border border-[#FF67FF]/20 font-mono">9 Jul - 7 Aug (30 days)</span>
+                            </div>
+
+                            <!-- Dashboard Core Content (Grid of Stats & mini Chart) -->
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto w-full">
+                                <!-- Stats column (7/12 width) -->
+                                <div class="md:col-span-7 grid grid-cols-2 gap-4 text-left">
+                                    <div class="bg-black/30 p-4 rounded-xl border border-white/5">
+                                        <span class="block text-white font-display font-extrabold text-xl md:text-2xl leading-none">250,627</span>
+                                        <span class="block text-[10px] text-white/40 uppercase tracking-widest mt-1">Reviews & Views</span>
+                                        <span class="inline-flex items-center text-[10px] text-green-400 font-semibold mt-1">
+                                            ▲ 736.5% <span class="text-white/30 font-normal ml-1">vs pre-campaign</span>
+                                        </span>
+                                    </div>
+                                    <div class="bg-black/30 p-4 rounded-xl border border-white/5">
+                                        <span class="block text-white font-display font-extrabold text-xl md:text-2xl leading-none">142,339</span>
+                                        <span class="block text-[10px] text-white/40 uppercase tracking-widest mt-1">Accounts Reached</span>
+                                        <span class="inline-block text-[9px] bg-eblue/15 text-eblue px-1.5 py-0.5 rounded font-mono mt-1">98.4% Non-Followers</span>
+                                    </div>
+                                    <div class="bg-black/30 p-4 rounded-xl border border-white/5">
+                                        <span class="block text-white font-display font-extrabold text-lg md:text-xl leading-none">8,841</span>
+                                        <span class="block text-[10px] text-white/40 uppercase tracking-widest mt-1">Profile Visits</span>
+                                        <span class="inline-flex items-center text-[10px] text-green-400 font-semibold mt-1">▲ 769.3%</span>
+                                    </div>
+                                    <div class="bg-black/30 p-4 rounded-xl border border-white/5">
+                                        <span class="block text-white font-display font-extrabold text-lg md:text-xl leading-none">645</span>
+                                        <span class="block text-[10px] text-white/40 uppercase tracking-widest mt-1">Link Taps</span>
+                                        <span class="inline-flex items-center text-[10px] text-green-400 font-semibold mt-1">▲ 451.3%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Chart Column (5/12 width) -->
+                                <div class="md:col-span-5 bg-black/45 p-5 rounded-xl border border-white/5 flex flex-col justify-between h-full min-h-[160px]">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-mono text-[9px] text-[#00AEEF]">REACH DISTRIBUTION</span>
+                                        <span class="font-sans text-[10px] text-white/50">By Content Type</span>
+                                    </div>
+                                    
+                                    <!-- Simple styled horizontal bar graphs -->
+                                    <div class="space-y-3 font-mono text-[10px] text-white/70">
+                                        <div>
+                                            <div class="flex justify-between text-[9px] mb-0.5 text-white/50">
+                                                <span>REELS (46.9%)</span>
+                                                <span class="text-pink">117,544Reached</span>
+                                            </div>
+                                            <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-pink h-full rounded-full" style="width: 46.9%;"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-[9px] mb-0.5 text-white/50">
+                                                <span>POSTS (31.9%)</span>
+                                                <span class="text-white">80,000Reached</span>
+                                            </div>
+                                            <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-white h-full rounded-full" style="width: 31.9%;"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-[9px] mb-0.5 text-white/50">
+                                                <span>STORIES (21.2%)</span>
+                                                <span class="text-[#00AEEF]">53,083Reached</span>
+                                            </div>
+                                            <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-[#00AEEF] h-full rounded-full" style="width: 21.2%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dashboard Footer Info -->
+                            <div class="border-t border-white/5 pt-3 flex items-center justify-between font-mono text-[9px] text-white/35">
+                                <span>Demographic Target: Bangalore Mothers, Parents of Kids 0-8yrs</span>
+                                <span class="animate-pulse flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> Click to inspect screenshots folder</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: THE SITUATION (id="overview") -->
+        <section id="overview" class="py-24 max-w-7xl mx-auto px-6 md:px-12 select-text">
+            <div class="mb-6 scroll-reveal">
+                <span class="font-handwritten text-[#00AEEF] text-2xl font-semibold block mb-2">→ The Situation</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+                <!-- Left Column Headline -->
+                <div class="lg:col-span-5 scroll-reveal">
+                    <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-3xl md:text-4xl leading-snug tracking-tight">
+                        A magical wonderland space.<br class="hidden md:inline" /> Genuinely thoughtful.<br class="hidden md:inline" /> Entirely invisible online.
+                    </h2>
+                </div>
+
+                <!-- Right Column Body -->
+                <div class="lg:col-span-7 font-sans text-base md:text-[17px] text-[#FFFFFF]/70 leading-[1.85] space-y-6 scroll-reveal">
+                    <p>
+                        When the team at <strong class="text-white">Down The Rabbit Hole</strong> reached out, they had built something truly special: a beautifully designed, Alice in Wonderland-themed indoor play space in the heart of Bangalore. From a parent-friendly workspace to creative sensory play arenas, it was thoughtfully designed, magical, and highly safe.
+                    </p>
+                    <p class="font-bold text-white border-l-2 border-pink pl-4 italic">
+                        The bottleneck: They had zero digital presence. 1 post. 8 followers. No strategy.
+                    </p>
+                    <p>
+                        A space this good deserved an audience that knew it existed. Families in Bangalore were actively looking for creative spaces, but they had no way of finding DTRH. That is the hurdle we jumped over together.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: THE BRIEF -->
+        <section class="py-24 bg-[#0a0a14] width-full select-text border-y border-white/5">
+            <div class="max-w-7xl mx-auto px-6 md:px-12">
+                <div class="mb-6 scroll-reveal">
+                    <span class="font-handwritten text-pink text-2xl font-semibold block mb-2">→ The Brief</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+                    <div class="lg:col-span-5 scroll-reveal">
+                        <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-3xl md:text-4xl leading-snug tracking-tight">
+                            Create a destination,<br />not just a kids play area.
+                        </h2>
+                    </div>
+                    <div class="lg:col-span-7 font-sans text-base md:text-[17px] text-[#FFFFFF]/70 leading-[1.8] space-y-6 scroll-reveal">
+                        <p>
+                            The founders made it clear: they didn’t want a generic corporate "kids zone" Instagram feed. They wanted an online identity that mirrors the actual warmth of the space.
+                        </p>
+                        <p class="text-white font-medium">
+                            The primary goal was to capture the ambient visual magic, build instant trust with protective parents, and convert scrolling attention into active physical bookings for birthday slots, summer camp admissions, and play sessions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: OUR APPROACH (id="approach") -->
+        <section id="approach" class="py-24 max-w-7xl mx-auto px-6 md:px-12 select-text">
+            <div class="mb-12 scroll-reveal">
+                <span class="font-handwritten text-[#00AEEF] text-2xl font-semibold block mb-2">→ Our Approach</span>
+                <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-3xl md:text-4xl tracking-tight">
+                    Dual Action Strategy: Priyanka & Rashi Collaboration
+                </h2>
+                <p class="font-sans text-sm text-white/40 mt-2">
+                    An equal parts blend of strict audience analytics and creative world-building.
+                </p>
+            </div>
+
+            <!-- Bento Grid describing Priyanka and Rashi roles -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Priyanka Card -->
+                <div class="border border-white/10 bg-[#0e0e1a]/80 rounded-[20px] p-8 md:p-10 relative overflow-hidden group hover:border-[#00AEEF]/30 transition-all duration-300">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#00AEEF]/10 rounded-full blur-2xl group-hover:bg-[#00AEEF]/15 transition-colors"></div>
+                    <span class="text-xs uppercase font-mono tracking-widest text-[#00AEEF] font-bold inline-block bg-[#00AEEF]/10 px-3 py-1 rounded border border-[#00AEEF]/15 mb-6">Strategy & Performance</span>
+                    <h3 class="font-display font-bold text-2xl text-white mb-4">Priyanka took the wheel on:</h3>
+                    
+                    <ul class="space-y-4 font-sans text-[15px] md:text-base text-white/70 leading-relaxed">
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#00AEEF] mt-1">✦</span>
+                            <span><strong>Audience Deep-Dive:</strong> Analysing search trends and local parenting demographics in Bangalore.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#00AEEF] mt-1">✦</span>
+                            <span><strong>Content Framework:</strong> Structuring intentional organic content pillars and monthly editorial calendars.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#00AEEF] mt-1">✦</span>
+                            <span><strong>Copywriting:</strong> Crafting high-conversion, warm, and highly informative caption copy.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#00AEEF] mt-1">✦</span>
+                            <span><strong>Paid Campaigns:</strong> Constructing, optimizing, and deploying laser-targeted ad conversion funnels.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Rashi Card -->
+                <div class="border border-white/10 bg-[#0e0e1a]/80 rounded-[20px] p-8 md:p-10 relative overflow-hidden group hover:border-[#FF67FF]/30 transition-all duration-300">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#FF67FF]/10 rounded-full blur-2xl group-hover:bg-[#FF67FF]/15 transition-colors"></div>
+                    <span class="text-xs uppercase font-mono tracking-widest text-[#FF67FF] font-bold inline-block bg-[#FF67FF]/10 px-3 py-1 rounded border border-[#FF67FF]/15 mb-6">Creative Direction</span>
+                    <h3 class="font-display font-bold text-2xl text-white mb-4">Rashi took the wheel on:</h3>
+                    
+                    <ul class="space-y-4 font-sans text-[15px] md:text-base text-white/70 leading-relaxed">
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#FF67FF] mt-1">✦</span>
+                            <span><strong>Visual Identity:</strong> Developing an elegant, fairy-tale themed creative suite based on Wonderland.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#FF67FF] mt-1">✦</span>
+                            <span><strong>Aesthetic Guidelines:</strong> Establishing color-graded photo setups and consistent fonts.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#FF67FF] mt-1">✦</span>
+                            <span><strong>Graphic Templates:</strong> Designing reusable posts, animated carousels, and cohesive highlights.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#FF67FF] mt-1">✦</span>
+                            <span><strong>Ad Creatives:</strong> Generating high-contrast graphic flyers and assets for summer camps and birthday parties.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: WHAT WE BUILT (id="creative") -->
+        <section id="creative" class="py-24 bg-[#0a0a14] w-full select-text border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-6 md:px-12">
+                <div class="mb-12 scroll-reveal text-center">
+                    <span class="font-handwritten text-[#FF67FF] text-2xl font-semibold block mb-2">→ Inside execution</span>
+                    <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-4xl tracking-tight">
+                        Deep Dive: Constructing the Digital Space
+                    </h2>
+                </div>
+
+                <!-- Step 1 Graph -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24 scroll-reveal">
+                    <div class="lg:col-span-5 space-y-4">
+                        <span class="font-mono text-xs text-[#FF67FF]">PHASE 01 // AESTHETICS</span>
+                        <h3 class="font-display font-bold text-3xl text-white leading-tight">Visual Identity Strategy</h3>
+                        <p class="font-sans text-white/70 text-sm md:text-base leading-relaxed">
+                            Rashi drafted cohesive grid layouts, utilizing beautiful illustrations and customized pastel accents that reflect curiosity, luxury, and playfulness. The theme remains whimsical without ever dropping clinical-grade clean aesthetics.
+                        </p>
+                    </div>
+                    <div class="lg:col-span-7">
+                        <div onclick="openLightboxPlaceholder('Visual Mood Board & Style Directions', 'Bespoke whimsical pastel branding guidelines tailored for protective parents in Bangalore, capturing shades of Lavender Violet, Soft Rose, Alice Blue and custom child-centric iconography.')" 
+                             class="image-placeholder rounded-xl w-full aspect-[16/10] flex flex-col items-center justify-center cursor-pointer relative">
+                            <!-- Live Image if uploaded -->
+                            <img src="https://lh3.googleusercontent.com/d/1HUWzc2zNtd9JcDaycb4uRtvyadaOeJJU" 
+                                 alt="Visual Mood Board and Grid Theme" 
+                                 class="absolute inset-0 w-full h-full object-cover z-20 hover:scale-[1.01] transition-transform duration-500"
+                                 id="moodboard-img-element"
+                                 onerror="this.style.display='none'; document.getElementById('moodboard-img-fallback').classList.remove('hidden');" />
+
+                            <!-- Premium Fallback Mood Board representation -->
+                            <div id="moodboard-img-fallback" class="absolute inset-0 bg-[#0c0c16] p-6 flex flex-col justify-between z-10 text-left">
+                                <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                                    <span class="font-mono text-[10px] text-pink uppercase tracking-widest">Brand Style System // Down The Rabbit Hole</span>
+                                    <span class="text-[9px] text-white/35 font-mono">CODE: DTRH_SYS_V1</span>
+                                </div>
+                                <div class="grid grid-cols-4 gap-3 my-auto">
+                                    <div class="space-y-1">
+                                        <div class="aspect-square bg-pink rounded-lg border border-white/10 shadow-lg"></div>
+                                        <span class="block text-[8px] font-mono text-white/50 text-center">#FF67FF <br/>Pink</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <div class="aspect-square bg-[#00AEEF] rounded-lg border border-white/10 shadow-lg"></div>
+                                        <span class="block text-[8px] font-mono text-white/50 text-center">#00AEEF <br/>Blue</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <div class="aspect-square bg-[#2C48D4] rounded-lg border border-white/10 shadow-lg"></div>
+                                        <span class="block text-[8px] font-mono text-white/50 text-center">#2C48D4 <br/>Indigo</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <div class="aspect-square bg-[#0e0e1a] rounded-lg border border-pink/30 shadow-lg flex items-center justify-center text-[10px] text-pink font-bold">
+                                            DTRH
+                                        </div>
+                                        <span class="block text-[8px] font-mono text-white/50 text-center">Dark <br/>Canvas</span>
+                                    </div>
+                                </div>
+                                <div class="border-t border-white/5 pt-2 flex justify-between items-center text-[9px] text-white/40">
+                                    <span>Typography: <strong class="text-white">Fraunces</strong> & <strong class="text-white">DM Sans</strong></span>
+                                    <span class="text-pink font-mono">click to zoom grid mockup</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Step 2 Graph -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24 scroll-reveal">
+                    <div class="lg:col-span-7 order-last lg:order-first">
+                        <div onclick="openLightboxPlaceholder('Client Collaboration Screenshot', 'Priyanka\'s roadmap sharing and calendar concept discussions over WhatsApp with Adithi Sarovar, recording prompt content approvals and positive client feedbacks.')" 
+                             class="image-placeholder rounded-xl w-full aspect-[16/10] flex flex-col items-center justify-center cursor-pointer relative">
+                            <!-- Live Image if uploaded -->
+                            <img src="images/whatsapp_concepts.png" 
+                                 alt="Content Calendar WhatsApp Collaboration" 
+                                 class="absolute inset-0 w-full h-full object-cover z-20 hover:scale-[1.01] transition-transform duration-500"
+                                 id="calendar-img-element"
+                                 onerror="this.style.display='none'; document.getElementById('calendar-img-fallback').classList.remove('hidden');" />
+
+                            <!-- Fallback Mock WhatsApp Conversation -->
+                            <div id="calendar-img-fallback" class="absolute inset-0 bg-[#0b141a] p-5 flex flex-col justify-between z-10 text-left font-sans text-xs">
+                                <!-- Top Chat Header -->
+                                <div class="flex items-center gap-3 border-b border-white/10 pb-2">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-pink to-blue flex items-center justify-center text-[10px] font-bold text-white">AS</div>
+                                    <div class="leading-none">
+                                        <span class="block font-bold text-white text-xs">Adithi Sarovar (Client)</span>
+                                        <span class="text-[9px] text-green-400">online</span>
+                                    </div>
+                                </div>
+
+                                <!-- Message Bubbles -->
+                                <div class="space-y-3 my-auto py-2">
+                                    <!-- Outgoing Message from Priyanka -->
+                                    <div class="flex flex-col items-end">
+                                        <div class="bg-[#005c4b] text-white p-3 rounded-lg rounded-tr-none max-w-[85%] text-[11px] leading-relaxed relative">
+                                            Hi @Adithi Sarovar, I'm sharing the content calendar with concepts for the upcoming week...
+                                            <span class="block text-[8px] text-white/55 text-right mt-1">1:10 PM ✓✓</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Incoming Message from Client -->
+                                    <div class="flex flex-col items-start">
+                                        <div class="bg-[#202c33] text-white p-3 rounded-lg rounded-tl-none max-w-[85%] text-[11px] leading-relaxed">
+                                            Loooooved it! I really think the concepts are forming up well. I would love to have a call to make the decision on the bio and highlights though as I like bits of each.
+                                            <span class="block text-[8px] text-white/45 text-right mt-1">1:13 PM</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Chat Input Area -->
+                                <div class="border-t border-white/5 pt-2 flex items-center justify-between text-[9px] text-white/35 font-mono">
+                                    <span>Tapped: Content Calendar approved Concepts</span>
+                                    <span class="text-pink">click to inspect workspace file</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 space-y-4">
+                        <span class="font-mono text-xs text-[#00AEEF]">PHASE 02 // LOGISTICS</span>
+                        <h3 class="font-display font-bold text-3xl text-white leading-tight">Content Pillars Structure</h3>
+                        <p class="font-sans text-white/70 text-sm md:text-base leading-relaxed">
+                            Priyanka mapped out explicit content structures. Every post had a target goal: Physical showcases highlighting sanitisation and safety; reels bringing parents inside the coffee lounge; and specific announcement sets highlighting camp schedules.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3 Graph (Grid preview) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24 scroll-reveal">
+                    <div class="lg:col-span-5 space-y-4">
+                        <span class="font-mono text-xs text-[#FF67FF]">PHASE 03 // VISUAL EVOLUTION</span>
+                        <h3 class="font-display font-bold text-3xl text-white leading-tight">Organic Content Grid Preview</h3>
+                        <p class="font-sans text-white/70 text-sm md:text-base leading-relaxed">
+                            A showcase of the wonderland-themed feed layout. Inside the active months, we curated an engaging community wall featuring beautiful cohesive pastels, organized showcase pillars, customized reel layouts, and parent guides.
+                        </p>
+                    </div>
+                    <div class="lg:col-span-7">
+                        <!-- After Grid Preview -->
+                        <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1phdChWsKEqtesLXufPi4mxPGffpGtupK', 'DTRH Instagram Grid', 'The finished wonderland-theme feed layout in place: beautiful cohesive pastels, organized showcase pillars, customized reel layouts, curated story circles and parent guides.')" 
+                             class="image-placeholder rounded-2xl aspect-[16/10] flex flex-col items-center justify-center cursor-pointer border-[#FF67FF]/20 hover:border-[#FF67FF]/50 relative overflow-hidden">
+                            <span class="absolute top-3 left-3 text-[9px] font-mono text-green-400 bg-green-900/40 px-2 py-0.5 rounded border border-green-500/25 z-30">DTRH GRID PREVIEW</span>
+                            
+                            <!-- Live Image -->
+                            <img src="https://lh3.googleusercontent.com/d/1phdChWsKEqtesLXufPi4mxPGffpGtupK" 
+                                 alt="Grid Preview" 
+                                 class="absolute inset-0 w-full h-full object-cover z-20 hover:scale-[1.01] transition-transform duration-500"
+                                 id="after-img-element"
+                                 onerror="this.style.display='none'; document.getElementById('after-img-fallback').classList.remove('hidden');" />
+
+                            <!-- Fallback mock -->
+                            <div id="after-img-fallback" class="absolute inset-0 bg-[#0c0c16] flex flex-col justify-center items-center p-4 z-10 text-center">
+                                <div class="w-10 h-10 rounded-xl bg-pink/15 flex items-center justify-center border border-pink/30 mb-2">
+                                    <svg class="w-5 h-5 text-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                                    </svg>
+                                </div>
+                                <span class="block text-[10px] uppercase font-mono tracking-widest text-[#00AEEF]">437 Followers</span>
+                                <span class="block text-[9px] text-[#FFFFFF]/40 mt-1">Cohesive layout // grid columns</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 Paid Ads Performance -->
+                <div class="border border-white/5 bg-[#0e0e1a]/80 rounded-[24px] p-8 md:p-12 scroll-reveal">
+                    <span class="font-mono text-xs text-[#00AEEF]">PHASE 04 // PERFORMANCE SCALING</span>
+                    <h3 class="font-display font-bold text-3xl text-white mb-6 leading-tight">Targeted Meta Paid Campaigns</h3>
+                    <p class="font-sans text-white/70 text-sm md:text-base mb-10 max-w-4xl">
+                        Organic consistency builds trust, but targeted campaigns multiply conversions. Priyanka built and adjusted two highly specific campaigns on Meta Ad Manager, completely supported by Rashi's designs.
+                    </p>
+
+                    <!-- Ad Campaign Stats columns -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-8 border-t border-white/5">
+                        <!-- Campaign A -->
+                        <div class="space-y-4">
+                            <span class="text-[#FF67FF] font-mono text-xs uppercase bg-[#FF67FF]/10 px-2.5 py-1 rounded border border-[#FF67FF]/15">Campaign 01 // Birthday Party Leads</span>
+                            <p class="font-sans text-sm text-white/60">
+                                Built to trigger message conversations with event planners and Bangalore parents actively preparing for kid parties.
+                            </p>
+                            <!-- stats board -->
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div class="bg-black/40 p-4 rounded-xl border border-white/5">
+                                    <span class="block text-white font-display font-bold text-lg md:text-xl">105</span>
+                                    <span class="block text-[10px] uppercase text-white/40 tracking-wider">DM Conversions Initiated</span>
+                                </div>
+                                <div class="bg-black/40 p-4 rounded-xl border border-white/5">
+                                    <span class="block text-white font-display font-bold text-lg md:text-xl">Rs. 55.08</span>
+                                    <span class="block text-[10px] uppercase text-white/40 tracking-wider">Cost per conversation</span>
+                                </div>
+                                <div class="bg-black/40 p-4 rounded-xl border border-white/5 col-span-2">
+                                    <span class="block text-white font-sans text-xs flex justify-between">
+                                        <span>Impressions: <strong class="text-white">35,325</strong></span>
+                                        <span>Reach: <strong class="text-white">23,294</strong></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div onclick="openLightboxPlaceholder('Birthday Campaign Ad Analytics', 'Real Meta Ad Manager insights showing the Event 300 Rs campaign, revealing 188 conversation starts, with the Birthday Party ad set yielding 117 messaging leads at an outstanding Rs 63.76 average.')" 
+                                 class="image-placeholder rounded-xl w-full aspect-[16/9] flex items-center justify-center cursor-pointer mt-4 relative overflow-hidden">
+                                <!-- Live Image if uploaded -->
+                                <img src="images/ads_event_300rs_leads.png" 
+                                     alt="Birthday Campaign Ad Creative" 
+                                     class="absolute inset-0 w-full h-full object-cover z-20 hover:scale-[1.01] transition-transform duration-500"
+                                     id="birth-ad-img"
+                                     onerror="this.style.display='none'; document.getElementById('birth-ad-fallback').classList.remove('hidden');" />
+
+                                <!-- Fallback mock -->
+                                <div id="birth-ad-fallback" class="absolute inset-0 bg-black/85 p-4 flex flex-col justify-between text-left z-10 w-full h-full font-mono text-[10px]">
+                                    <div class="flex justify-between items-center border-b border-white/5 pb-1.5">
+                                        <span class="text-pink">META ADS // ENGAGEMENT CAMPAIGN</span>
+                                        <span class="text-green-400">● ACTIVE</span>
+                                    </div>
+                                    <div class="space-y-1.5 my-auto">
+                                        <div class="flex justify-between text-[11px] text-white font-bold">
+                                            <span>Ad Set: Birthday Party Promo</span>
+                                            <span class="text-pink">117 Leads Gained</span>
+                                        </div>
+                                        <p class="font-sans text-white/50 text-[9px] leading-tight">
+                                            Targeting: Bangalore parents of children aged 0-8 with birthdays/party planning active search flags.
+                                        </p>
+                                        <div class="grid grid-cols-3 gap-2 pt-1 font-mono text-[9px]">
+                                            <div class="bg-white/5 p-1.5 rounded text-center">
+                                                <span class="block text-white">Rs. 63.76</span>
+                                                <span class="text-white/30 text-[7px] uppercase">Cost / DM</span>
+                                            </div>
+                                            <div class="bg-white/5 p-1.5 rounded text-center">
+                                                <span class="block text-white">Rs. 7,460.22</span>
+                                                <span class="text-white/30 text-[7px] uppercase">Total Spent</span>
+                                            </div>
+                                            <div class="bg-white/5 p-1.5 rounded text-center">
+                                                <span class="block text-[#00AEEF]">Intro: 71 Starts</span>
+                                                <span class="text-white/30 text-[7px] uppercase">Alternate Set</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-white/5 pt-1.5 flex justify-between text-[8px] text-white/30">
+                                        <span>Focus: Direct Party Bookings DM</span>
+                                        <span class="text-[#00AEEF]">click to expand specs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campaign B -->
+                        <div class="space-y-4">
+                            <span class="text-[#00AEEF] font-mono text-xs uppercase bg-[#00AEEF]/10 px-2.5 py-1 rounded border border-[#00AEEF]/15">Campaign 02 // Summer Camp Traffic</span>
+                            <p class="font-sans text-sm text-white/60">
+                                Constructed to scale Profile visits, driving targeted attention to interactive child camping agendas.
+                            </p>
+                            <!-- stats board -->
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div class="bg-black/40 p-4 rounded-xl border border-white/5">
+                                    <span class="block text-white font-display font-bold text-lg md:text-xl">4,729</span>
+                                    <span class="block text-[10px] uppercase text-white/40 tracking-wider">Page / Profile Visits</span>
+                                </div>
+                                <div class="bg-black/40 p-4 rounded-xl border border-white/5">
+                                    <span class="block text-white font-display font-bold text-lg md:text-xl">Rs. 1.50</span>
+                                    <span class="block text-[10px] uppercase text-white/40 tracking-wider">Cost per visit</span>
+                                </div>
+                                <div class="bg-black/40 p-4 rounded-xl border border-white/5 col-span-2">
+                                    <span class="block text-white font-sans text-xs flex justify-between">
+                                        <span>Unique Clicks: <strong class="text-[#00AEEF]">5,198</strong></span>
+                                        <span>CPC: <strong class="text-[#00AEEF]">Rs. 1.36</strong></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div onclick="openLightboxPlaceholder('Summer Camp Traffic Ad Analytics', 'Real Meta Ad Manager results for Campaign Event 250 RS: showing 4,729 page and profile visits at a low cost of Rs 1.50 per page visit, driving high local child-camp signups.')" 
+                                 class="image-placeholder rounded-xl w-full aspect-[16/9] flex items-center justify-center cursor-pointer mt-4 relative overflow-hidden">
+                                <!-- Live Image if uploaded -->
+                                <img src="images/ads_event_250rs_traffic.png" 
+                                     alt="Summer Camp Campaign Ad Creative" 
+                                     class="absolute inset-0 w-full h-full object-cover z-20 hover:scale-[1.01] transition-transform duration-500"
+                                     id="camp-ad-img"
+                                     onerror="this.style.display='none'; document.getElementById('camp-ad-fallback').classList.remove('hidden');" />
+
+                                <!-- Fallback mock -->
+                                <div id="camp-ad-fallback" class="absolute inset-0 bg-black/85 p-4 flex flex-col justify-between text-left z-10 w-full h-full font-mono text-[10px]">
+                                    <div class="flex justify-between items-center border-b border-white/5 pb-1.5">
+                                        <span class="text-[#00AEEF]">META ADS // TRAFFIC TO PROFILE</span>
+                                        <span class="text-green-400">● ACTIVE</span>
+                                    </div>
+                                    <div class="space-y-1.5 my-auto">
+                                        <div class="flex justify-between text-[11px] text-white font-bold">
+                                            <span>Ad Set: Event 250 RS Campaign</span>
+                                            <span class="text-[#00AEEF]">4,729 Visits</span>
+                                        </div>
+                                        <p class="font-sans text-white/50 text-[9px] leading-tight">
+                                            Targeting: Summer camp inquiries and child activity searches in South Bangalore corridors.
+                                        </p>
+                                        <div class="grid grid-cols-3 gap-2 pt-1 font-mono text-[9px]">
+                                            <div class="bg-white/5 p-1.5 rounded text-center">
+                                                <span class="block text-white">Rs. 1.50</span>
+                                                <span class="text-white/30 text-[7px] uppercase">Cost / Visit</span>
+                                            </div>
+                                            <div class="bg-white/5 p-1.5 rounded text-center">
+                                                <span class="block text-white">Rs. 7,115.87</span>
+                                                <span class="text-white/30 text-[7px] uppercase">Spent Event</span>
+                                            </div>
+                                            <div class="bg-white/5 p-1.5 rounded text-center">
+                                                <span class="block text-pink">Birthday: 2,968</span>
+                                                <span class="text-white/30 text-[7px] uppercase">Sub Ad set</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-white/5 pt-1.5 flex justify-between text-[8px] text-white/30">
+                                        <span>Focus: Summer Camp registrations and site visitations</span>
+                                        <span class="text-pink">click to expand details</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 6.5: PROOF OF WORK // CREATIVE SHOWCASE (id="our-work") -->
+        <section id="our-work" class="bg-card w-full py-24 select-text border-y border-white/5 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-14 scroll-reveal overflow-visible text-center max-w-3xl mx-auto">
+                    <span class="font-handwritten text-[#FF67FF] text-2xl font-bold block mb-2">→ Proof of Work</span>
+                    <h2 class="font-display font-extrabold text-[#00AEEF] text-3xl sm:text-4xl md:text-5xl uppercase leading-tight tracking-tight mb-4">
+                        Creative Showcase
+                    </h2>
+                    <p class="text-xs text-white/50 mt-3 font-mono">
+                        💡 Explore reels, carousel, and memes curated to build parent community and drive play space bookings.
+                    </p>
+                </div>
+
+                <!-- TAB CONTAINER FOR SAMPLES -->
+                <div class="w-full mt-12 bg-[#080810] border border-white/5 rounded-[40px] p-6 md:p-10 scroll-reveal">
+                    
+                    <!-- TAB CONTROLLER BAR -->
+                    <div class="flex justify-start md:justify-center items-center gap-3 overflow-x-auto pb-4 mb-10 no-scrollbar">
+                        <button onclick="changeShowcaseTab(0)" id="tab-trigger-0" class="tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-300 bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] text-white">
+                            🎬 REEL
+                        </button>
+                        <button onclick="changeShowcaseTab(1)" id="tab-trigger-1" class="tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white">
+                            📊 CAROUSEL
+                        </button>
+                        <button onclick="changeShowcaseTab(2)" id="tab-trigger-2" class="tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white">
+                            🃏 MEME
+                        </button>
+                    </div>
+
+                    <!-- TAB CONTENTS -->
+                    <!-- TAB 1 — REELS SAMPLES -->
+                    <div id="tab-content-reels" class="tab-pane block opacity-100 transition-opacity duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
+                            <!-- Center positioning for single item -->
+                            <div class="md:col-start-2 flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/DMzTVpQpbkd/?utm_source=ig_embed&utm_campaign=embed_video_watch_again" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(44,72,212,0.35)] hover:border-white/20">
+                                    <!-- Rotating/shifting gradient placeholder -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#2C48D4] to-[#00AEEF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-2 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Play Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reel UI Overlay -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold">Whimsical Experience</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">Down The Rabbit Hole Tour</h5>
+                                        <span class="text-[9px] text-emerald-400 block mt-1 font-body font-bold">🎬 Watch Reel ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">Down The Rabbit Hole Tour</h4>
+                                    <a href="https://www.instagram.com/p/DMzTVpQpbkd/?utm_source=ig_embed&utm_campaign=embed_video_watch_again" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0 font-bold">View on Instagram ↗</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2 — CAROUSELS -->
+                    <div id="tab-content-carousels" class="tab-pane hidden opacity-0 transition-opacity duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
+                            <!-- Center positioning for single item -->
+                            <div class="md:col-start-2 flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/DLZxIAwp55n/?utm_source=ig_embed&ig_rid=51bae2dc-9a2b-4c5f-910e-9038e14c3dd1" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(255,103,255,0.3)] hover:border-white/20">
+                                    <!-- Shifting brand colors -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#00AEEF] to-[#FF67FF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:-rotate-1 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Document Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                <line x1="9" y1="9" x2="15" y2="9" />
+                                                <line x1="9" y1="13" x2="15" y2="13" />
+                                                <line x1="9" y1="17" x2="13" y2="17" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Brand Template UI Mockup -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold">Kids Safe Zone</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">Indoor Amenities & Guides</h5>
+                                        <span class="text-[9px] text-pink block mt-1 font-body font-bold">📊 Swipe Slide ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">Amenities & Guides</h4>
+                                    <a href="https://www.instagram.com/p/DLZxIAwp55n/?utm_source=ig_embed&ig_rid=51bae2dc-9a2b-4c5f-910e-9038e14c3dd1" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0 font-bold">View on Instagram ↗</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3 — MEMES SAMPLES -->
+                    <div id="tab-content-memes" class="tab-pane hidden opacity-0 transition-opacity duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
+                            <!-- Center positioning for single item -->
+                            <div class="md:col-start-2 flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/DLr58uGp3C3/?utm_source=ig_embed&utm_campaign=embed_video_watch_again" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(255,103,255,0.25)] hover:border-white/20">
+                                    <!-- Gradient -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#9C20FE] to-[#FF67FF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-2 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Smiley/Meme Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                                                <line x1="9" y1="9" x2="9.01" y2="9" />
+                                                <line x1="15" y1="9" x2="15.01" y2="9" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Meme UI Overlay -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold">Relatable Parent Humor</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">Bangalore Playzone Survival</h5>
+                                        <span class="text-[9px] text-pink block mt-1 font-body font-bold">🃏 Watch Meme ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">Bangalore Playzone Survival</h4>
+                                    <a href="https://www.instagram.com/p/DLr58uGp3C3/?utm_source=ig_embed&utm_campaign=embed_video_watch_again" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0 font-bold">View on Instagram ↗</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6.8: AD RESULTS CASE STUDY PORTFOLIO (id="ad-results") -->
+        <section id="ad-results" class="bg-[#0b0b14] w-full py-24 select-text border-y border-white/5 relative">
+
+            
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-14 scroll-reveal overflow-visible text-center max-w-3xl mx-auto">
+                    <span class="font-handwritten text-[#00AEEF] text-2xl font-bold block mb-2">→ Campaign Performance</span>
+                    <h2 class="font-display font-extrabold text-[#FF67FF] text-3xl sm:text-4xl md:text-5xl uppercase leading-tight tracking-tight mb-4">
+                        Ad Results & Metrics
+                    </h2>
+                    <p class="text-xs text-white/50 mt-3 font-mono">
+                        📊 Live Campaign data extracted directly from Meta Ad Manager, detailing monthly reach, direct messaging leads, and profile traffic.
+                    </p>
+                </div>
+
+                <!-- TAB CONTAINER FOR ADS -->
+                <div class="w-full mt-12 bg-[#0d0d18] border border-white/5 rounded-[40px] p-6 md:p-10 scroll-reveal">
+                    
+                    <!-- AD TAB CONTROLLER BAR -->
+                    <div class="flex justify-start md:justify-center items-center gap-3 overflow-x-auto pb-4 mb-10 no-scrollbar animate-pulse bg-black/10 p-1.5 rounded-full max-w-max mx-auto border border-white/5">
+                        <button onclick="changeAdResultsTab(0)" id="ad-tab-trigger-0" class="ad-tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-300 bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] text-white">
+                            📊 OVERVIEW & REACH
+                        </button>
+                        <button onclick="changeAdResultsTab(1)" id="ad-tab-trigger-1" class="ad-tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white">
+                            💬 MSG & DM LEADS
+                        </button>
+                        <button onclick="changeAdResultsTab(2)" id="ad-tab-trigger-2" class="ad-tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white">
+                            🎯 PROFILE VISITS
+                        </button>
+                    </div>
+
+                    <!-- TAB 0: OVERVIEW & REACH -->
+                    <div id="ad-tab-content-overview" class="ad-tab-pane transition-all duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                            <!-- Card 1 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(0,174,239,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#00AEEF] tracking-widest block mb-1 uppercase font-bold">Aggregate Results</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Main Ad Performance (Ad Results)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1DTbPVqE-DxxAYEdJllL0yb6UEoiZ3Z51', 'Main Ad Performance', 'Aggregated results for campaign run show a cumulative breakdown of reach and engagement inside Meta Ad Manager.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1DTbPVqE-DxxAYEdJllL0yb6UEoiZ3Z51" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Aggregate Ad results chart" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-[#FF67FF] text-lg mb-2">📊 AD RESULTS IMAGE</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed Meta Ad Manager analytics showing overall performance summary. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Total Reach</span>
+                                        <strong class="text-[#FF67FF]">30K+</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Frequency</span>
+                                        <strong class="text-[#00AEEF]">1.45</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Conversions</span>
+                                        <strong class="text-green-400">High</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(255,103,255,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#FF67FF] tracking-widest block mb-1 uppercase font-bold">Campaign Breakdown</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Individual Ad Run Analysis (Ad Results 1)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1O96XudFIxfo49pnP-OvdVR6Kg8y4FI7n', 'Individual Ad Run Analysis', 'Analysis of targeted parenting ad sets in South Bangalore corridors shows peak click efficacy.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1O96XudFIxfo49pnP-OvdVR6Kg8y4FI7n" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Individual Ad Set chart" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-[#00AEEF] text-lg mb-2">📊 AD RESULTS 1 IMAGE</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed individual ad set analytics showing Cost Per Click and link clicks. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Unique Clicks</span>
+                                        <strong class="text-[#FF67FF]">5,198</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">CPC Avg</span>
+                                        <strong class="text-[#00AEEF]">Rs 1.36</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Relevance</span>
+                                        <strong class="text-green-400">9.2/10</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(0,174,239,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#00AEEF] tracking-widest block mb-1 uppercase font-bold">Trend Analytics</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Monthly Ads Reach Trend</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1h0KlgbSruTbUubWVg7zYgnhUvjWjUVDj', 'Monthly Ads Reach Trend', 'Meta dashboard reflecting the sustained climb in monthly ad-fueled account reach.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1h0KlgbSruTbUubWVg7zYgnhUvjWjUVDj" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Monthly Ads Reach Trend" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-pink text-lg mb-2">📊 MONTHLY REACH TREND</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed chart displaying trends in accounts reached with active budgets. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Peak Reach</span>
+                                        <strong class="text-[#00AEEF]">120K+</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Efficiency</span>
+                                        <strong class="text-[#FF67FF]">+450%</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Paid Ratio</span>
+                                        <strong class="text-green-400">82.1%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 4 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(255,103,255,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#FF67FF] tracking-widest block mb-1 uppercase font-bold">Scaling Indicators</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Overall Monthly Reach Growth</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1V8LyUtBNiaHMxLNCZScuLZNEuqmrkYOe', 'Overall Monthly Reach Growth', 'Comparative chart showing pre-campaign baseline vs. current advertising phase, demonstrating exponential scaling.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1V8LyUtBNiaHMxLNCZScuLZNEuqmrkYOe" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Overall Monthly Ads Reach Chart" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-[#00AEEF] text-lg mb-2">📊 MONTHLY REACH WITH ADS</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed Meta graph listing month-over-month growth with campaigns. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Growth Rate</span>
+                                        <strong class="text-[#FF67FF]">7.3x</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Active Ads</span>
+                                        <strong class="text-[#00AEEF]">5 Promo</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Lead Stream</span>
+                                        <strong class="text-green-400">Steady</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 1: MSG & DM LEADS -->
+                    <div id="ad-tab-content-dm" class="ad-tab-pane hidden opacity-0 transition-all duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                            <!-- Card 1 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(255,103,255,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#FF67FF] tracking-widest block mb-1 uppercase font-bold">Creative Assets</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Direct Message Ad Creative (DM Ad 4)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1odvq8H80k7HDkTiqe7wAz3hb5MEMkGiw', 'DM Ad Creative 4', 'A screenshot of the ad creative optimized to drive direct messaging starts for party inquiries.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1odvq8H80k7HDkTiqe7wAz3hb5MEMkGiw" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="DM Ad 4" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-[#00AEEF] text-lg mb-2">💬 DM AD 4</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Direct messaging ad creative snapshot optimized for birthday party bookings. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Cost / DM</span>
+                                        <strong class="text-[#FF67FF]">Rs 55.08</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">DM Starts</span>
+                                        <strong class="text-[#00AEEF]">188+</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Click CTR</span>
+                                        <strong class="text-green-400">3.4%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(0,174,239,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#00AEEF] tracking-widest block mb-1 uppercase font-bold">Campaign Dashboard</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Lead Conversion Results (DM Ad Result 2)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1R2afB_XRhuG3gOAdAHTWTozWEVyR766u', 'DM Ad Conversion Dashboard', 'Performance analytics illustrating Cost Per Conversation and conversation started rates inside the dashboard.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1R2afB_XRhuG3gOAdAHTWTozWEVyR766u" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="DM Ad Result 2" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-pink text-lg mb-2">💬 DM AD RESULT 2</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed marketing campaign dashboard listing audience scaling parameters. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Spend Total</span>
+                                        <strong class="text-[#FF67FF]">Rs 5.8K</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Conversation</span>
+                                        <strong class="text-[#00AEEF]">105 Runs</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Efficiency</span>
+                                        <strong class="text-green-400">92%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(255,103,255,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#FF67FF] tracking-widest block mb-1 uppercase font-bold">Demographic Leads</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Parent Audience Funnel (DM Ad Result 3)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1plGYaGas1k6IpJBZeYCStmXL0xTjziTf', 'DM Leads Breakdown', 'Granular analysis tracking the conversion flows of South Bangalore mothers and event planners.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1plGYaGas1k6IpJBZeYCStmXL0xTjziTf" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="DM Ad Result 3" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-[#00AEEF] text-lg mb-2">💬 DM AD RESULT 3</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed conversion funnel for targeted Bengaluru parent segments. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Leads Gained</span>
+                                        <strong class="text-[#00AEEF]">117</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Cost / Lead</span>
+                                        <strong class="text-[#FF67FF]">Rs 63.76</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Bounce Rate</span>
+                                        <strong class="text-green-400">11.8%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 4 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(0,174,239,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#00AEEF] tracking-widest block mb-1 uppercase font-bold">Aggregate Conversions</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Overall Messaging Summary (DM Ad Result)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1cxNQIguWNxhcg4GASVGwKkdRXHNE1G8j', 'Overall Messaging Campaign Summary', 'The aggregated Meta performance table for Messaging Campaigns, displaying high return metrics.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1cxNQIguWNxhcg4GASVGwKkdRXHNE1G8j" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Overall Message Performance" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-[#FF67FF] text-lg mb-2">💬 DM AD RESULT</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Aggregate Meta spreadsheet highlighting overall messaging campaign performance. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Total Starts</span>
+                                        <strong class="text-[#FF67FF]">188</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Active Days</span>
+                                        <strong class="text-[#00AEEF]">14 Days</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Book Ratio</span>
+                                        <strong class="text-green-400">High</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: PROFILE VISITS -->
+                    <div id="ad-tab-content-profile" class="ad-tab-pane hidden opacity-0 transition-all duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                            <!-- Card 1 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(0,174,239,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#00AEEF] tracking-widest block mb-1 uppercase font-bold">Audience Growth</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Profile Visit Results Breakdown</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1tkanAEEmpc1dUYET8n52OGrRnzLflnC5', 'Profile Visit Breakdown', 'Analytics summary displaying actual profile visits, click-through-rates, and landing quality indices.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1tkanAEEmpc1dUYET8n52OGrRnzLflnC5" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Profile Visit results summary" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-pink text-lg mb-2">🎯 PROFILE RESULTS</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed Meta Ad Manager analytics showing overall profile visitations. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Profile Visits</span>
+                                        <strong class="text-[#00AEEF]">4,729</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Cost / Visit</span>
+                                        <strong class="text-[#FF67FF]">Rs 1.50</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Conversion</span>
+                                        <strong class="text-green-400">+18% Follow</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(255,103,255,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#FF67FF] tracking-widest block mb-1 uppercase font-bold">Campaign Performance</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Instagram Page Metrics Details (Profile Visit Ad)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1aVp1UpNNZHEkhQoBo-xz1i_W1OCrNcq7', 'Instagram Page Metrics', 'Ad metrics on the active Instagram promotion that led to immediate organic growth multipliers.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1aVp1UpNNZHEkhQoBo-xz1i_W1OCrNcq7" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Profile Visit Ad result overview" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-[#00AEEF] text-lg mb-2">🎯 PROFILE VISIT AD RESULT</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed campaign performance dashboard featuring click configurations. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Unique Clicks</span>
+                                        <strong class="text-[#00AEEF]">5,198</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Total Budget</span>
+                                        <strong class="text-[#FF67FF]">Rs 7.1K</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Campaign CTR</span>
+                                        <strong class="text-green-400">2.65%</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(0,174,239,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#00AEEF] tracking-widest block mb-1 uppercase font-bold">Relevance Score</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Optimized Traffic Funnel (Profile Visit Ad Result 1)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/11Onqe9F0DaM20dTsbDsrItrAsXeN8_yv', 'Optimized Traffic Funnel', 'Screen illustrating low-CPC click behaviors driven from high retention video creative templates.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/11Onqe9F0DaM20dTsbDsrItrAsXeN8_yv" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Profile Visit Ad Result 1" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden">
+                                        <span class="text-pink text-lg mb-2">🎯 AUDIENCE ENGAGEMENT</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Specific analytics dashboard on link clicks and content ratings. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">CPC Link</span>
+                                        <strong class="text-[#00AEEF]">Rs 1.36</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Impression</span>
+                                        <strong class="text-[#FF67FF]">41.5K</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Retention</span>
+                                        <strong class="text-green-400">Excellent</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 4 -->
+                            <div class="group border border-white/5 bg-black/40 rounded-3xl p-6 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(255,103,255,0.15)] transition-all duration-300">
+                                <span class="font-mono text-[10px] text-[#FF67FF] tracking-widest block mb-1 uppercase font-bold">Scaling Curve</span>
+                                <h3 class="font-display font-bold text-white text-lg mb-3">Overall Profile Metric Growth (Profile Visit Ad Result 2)</h3>
+                                <div onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1d3I3_NtStm-092qTGiFP5TAHC4FT7ZI0', 'Instagram Growth Curvature', 'Sustained daily traffic metrics to Down The Rabbit Hole IG profile showing visual engagement curve.')" 
+                                     class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-950 border border-white/5 cursor-pointer my-4">
+                                    <img src="https://lh3.googleusercontent.com/d/1d3I3_NtStm-092qTGiFP5TAHC4FT7ZI0" 
+                                         class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         alt="Profile Visit Ad Result 2" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+                                    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black/80 font-mono text-[10px] p-4 text-center hidden flex">
+                                        <span class="text-[#00AEEF] text-lg mb-2">🎯 RESULTS GRAPH 2</span>
+                                        <p class="text-white/40 text-[9px] max-w-xs">Detailed graphical representation of active profile visits and clicks performance over time. Click details to view.</p>
+                                    </div>
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-center text-xs text-white">
+                                        <span>Click to expand screenshot 🔍</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 font-mono text-[10px] text-white/60 text-center py-2 border-t border-white/5">
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Engagement</span>
+                                        <strong class="text-[#FF67FF]">6.2K+</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Conversion</span>
+                                        <strong class="text-[#00AEEF]">12.4%</strong>
+                                    </div>
+                                    <div class="bg-white/5 p-2 rounded">
+                                        <span class="text-[9px] uppercase block text-white/40">Frequence</span>
+                                        <strong class="text-green-400">1.33</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6.9: ORGANIC RESULTS -->
+        <section id="organic-results" class="bg-[#0b0b14] w-full py-24 select-text border-y border-white/5 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-14 scroll-reveal overflow-visible text-center max-w-3xl mx-auto">
+                    <span class="font-handwritten text-[#00AEEF] text-2xl font-bold block mb-2">→ Organic Growth</span>
+                    <h2 class="font-display font-extrabold text-[#FF67FF] text-3xl sm:text-4xl md:text-5xl uppercase leading-tight tracking-tight mb-4">
+                        Organic Results
+                    </h2>
+                </div>
+                <!-- Images container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 scroll-reveal">
+                    <!-- Image Placeholders -->
+                    <div class="image-placeholder rounded-2xl aspect-square flex flex-col items-center justify-center border-white/10 hover:border-pink/30 overflow-hidden group">
+                        <img src="https://lh3.googleusercontent.com/d/1EOAP_hAV0IUvEREoPv8jfKrP7QI8csGv" alt="Organic 1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300">
+                    </div>
+                     <div class="image-placeholder rounded-2xl aspect-square flex flex-col items-center justify-center border-white/10 hover:border-pink/30 overflow-hidden group">
+                        <img src="https://lh3.googleusercontent.com/d/1IJAJ4b9m9PAYqLCtsj7PBhwKBKZ_A4id" alt="Organic 2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300">
+                    </div>
+                     <div class="image-placeholder rounded-2xl aspect-square flex flex-col items-center justify-center border-white/10 hover:border-pink/30 cursor-pointer overflow-hidden group"
+                         onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1krPfkqDHH56j7VkDzIka7IYVRNoLBZdA', 'Organic Result 3', 'Organic growth insight')">
+                        <img src="https://lh3.googleusercontent.com/d/1krPfkqDHH56j7VkDzIka7IYVRNoLBZdA" alt="Organic 3" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300">
+                    </div>
+                    <div class="image-placeholder rounded-2xl aspect-square flex flex-col items-center justify-center border-white/10 hover:border-pink/30 cursor-pointer overflow-hidden group"
+                         onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1Ning0Pj-WEqZWXy7AGYh94b2UlaayZZl', 'Organic Result 4', 'Organic growth insight')">
+                        <img src="https://lh3.googleusercontent.com/d/1Ning0Pj-WEqZWXy7AGYh94b2UlaayZZl" alt="Organic 4" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300">
+                    </div>
+                    <div class="image-placeholder rounded-2xl aspect-square flex flex-col items-center justify-center border-white/10 hover:border-pink/30 cursor-pointer overflow-hidden group"
+                         onclick="openAdResultsLightbox('https://lh3.googleusercontent.com/d/1ggW3x8xQlktUpvtAX6e82LB17NVS4sgW', 'Organic Result 5', 'Organic growth insight')">
+                        <img src="https://lh3.googleusercontent.com/d/1ggW3x8xQlktUpvtAX6e82LB17NVS4sgW" alt="Organic 5" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: TESTIMONIAL (id="testimonial") -->
+        <section id="testimonial" class="py-24 max-w-7xl mx-auto px-6 md:px-12 select-text relative">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Video Testimonial -->
+                <div class="w-full aspect-[9/16] rounded-3xl overflow-hidden border border-white/5 bg-black">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/56TQ6L6OlvY?feature=share" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+                <!-- Text Testimonial -->
+                <div class="bg-[#0e0e1a]/80 border border-white/5 p-8 md:p-12 rounded-3xl space-y-6">
+                    <div class="text-[#FF67FF] font-display text-5xl leading-none">“</div>
+                    <p class="font-sans text-white/90 text-lg md:text-xl leading-relaxed italic">
+                        Thank you both for your support for the initial launch and growth on the socials. I am genuinely happy, impressed with the engagement that we had and do hope that we will be able to work together in the future. I am more than happy to give my recommendation towards your services to any future client.
+                    </p>
+                    <div class="border-t border-white/5 pt-6 flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-r from-eblue to-pink flex items-center justify-center font-display font-bold text-white text-lg">
+                            AS
+                        </div>
+                        <div>
+                            <span class="block font-sans text-base font-bold text-white">Adithi Sarovar</span>
+                            <span class="block font-mono text-xs text-white/40">Founder, Down The Rabbit Hole</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: WHAT THIS TAUGHT US -->
+        <section class="py-24 w-full select-text border-y border-white/5">
+            <div class="max-w-4xl mx-auto px-6 text-center">
+                <div class="mb-6 scroll-reveal">
+                    <span class="font-handwritten text-[#FF67FF] text-2xl font-semibold block mb-2">→ Lessons Learned</span>
+                    <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-4xl tracking-tight leading-tight">
+                        What This Taught Us
+                    </h2>
+                </div>
+
+                <div class="font-sans text-base md:text-lg text-[#FFFFFF]/70 leading-relaxed space-y-6 scroll-reveal text-left max-w-3xl mx-auto">
+                    <p>
+                        Down The Rabbit Hole was one of the most exciting projects we’ve worked on — not just because the results were strong, but because we got to build everything from scratch.
+                    </p>
+                    <p>
+                        <strong class="text-white">Starting from zero is actually a gift.</strong> There are no old habits to undo, no mismatched visuals to clean up, and no conflicting messages to untangle. You get to define the story from the very first post.
+                    </p>
+                    <p class="border-l-2 border-[#00AEEF] pl-6 py-2 italic font-medium text-white/90">
+                        What worked beautifully here was the combination of a clear brand direction, consistent content, and ads that were built on top of an organic foundation rather than instead of one. The organic content gave us proof of what resonated. The ads amplified what was already working.
+                    </p>
+                    <p class="font-bold text-center text-white text-base pt-4 border-t border-white/5 mt-6">
+                        That's the system. And it works.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 10: FINAL CALL TO ACTION -->
+        <section class="py-32 px-6 md:px-12 bg-black border-t border-white/5 overflow-hidden relative">
+            
+            
+            <div class="max-w-4xl mx-auto text-center relative z-10 space-y-8">
+                <span class="font-handwritten text-[#FF67FF] text-2xl font-semibold block mb-2">Ready to grow?</span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-white tracking-tight uppercase leading-tight">
+                    Want to build something like <br />this from the ground up?
+                </h2>
+                <p class="font-sans text-base sm:text-[18px] text-white/60 max-w-2xl mx-auto leading-relaxed">
+                    We're good at starting from zero. No obsolete patterns, no cluttered workflows — just strict strategy and beautiful output built to scale.
+                </p>
+                <div class="pt-4 flex flex-col items-center gap-4">
+                    <a href="https://calendly.com/pixelsnprompts/30min" target="_blank" rel="noopener noreferrer" 
+                       class="font-display font-bold text-base md:text-lg uppercase tracking-wider bg-gradient-to-r from-pink to-blue text-white px-10 py-5 rounded-full hover:shadow-[0_0_45px_rgba(255,103,255,0.7)] transition-all duration-300 transform hover:-translate-y-1 block cursor-pointer">
+                        Book a Free 30-Minute Call →
+                    </a>
+                    <span class="font-body text-xs text-white/30 italic">No fluff. No pressure. Let's build your brand.</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0a0a14] border-t border-white/5 py-12 px-6 md:px-12 text-center relative z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <span class="flex items-center gap-3 font-display font-extrabold text-lg">
+                <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradDtrhFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00CEFF" />
+                            <stop offset="35%" stop-color="#2E4AEC" />
+                            <stop offset="75%" stop-color="#9C20FE" />
+                            <stop offset="100%" stop-color="#E23EFF" />
+                        </linearGradient>
+                        <pattern id="logoGridDtrhFooter" width="4.1667" height="4.1667" patternUnits="userSpaceOnUse">
+                            <rect width="4.1667" height="4.1667" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="0.5" />
+                        </pattern>
+                        <clipPath id="logoClipDtrhFooter">
+                            <circle cx="50" cy="50" r="46" />
+                        </clipPath>
+                    </defs>
+                    <g clip-path="url(#logoClipDtrhFooter)">
+                        <circle cx="50" cy="50" r="46" fill="url(#logoGradDtrhFooter)" />
+                        <rect x="0" y="0" width="100" height="100" fill="url(#logoGridDtrhFooter)" />
+                    </g>
+                    <rect x="50.3500" y="25.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="29.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="29.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="37.8500" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="33.6833" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="37.8500" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="29.5167" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="33.6833" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="37.8500" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="62.8500" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="29.5167" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="33.6833" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="58.6833" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="62.8500" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="29.5167" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="54.5167" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="58.6833" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="62.8500" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="54.5167" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="58.6833" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="54.5167" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="50.3500" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="71.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="46.1833" y="71.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                    <rect x="42.0167" y="75.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+                </svg>
+                <span class="bg-gradient-to-r from-[#2C48D4] to-[#00AEEF] bg-clip-text text-transparent">Pixels & Prompts</span>
+            </span>
+            <div class="flex items-center gap-6">
+                <a href="/#work" class="font-body text-sm text-white/40 hover:text-white transition-colors">Work</a>
+                <a href="/#about" class="font-body text-sm text-white/40 hover:text-white transition-colors">About</a>
+                <a href="/#process" class="font-body text-sm text-white/40 hover:text-white transition-colors">Process</a>
+                <a href="/#faq" class="font-body text-sm text-white/40 hover:text-white transition-colors">FAQ</a>
+            </div>
+            <p class="font-body text-sm text-white/20">
+                © 2026 Pixels & Prompts. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Custom Cursor Execution
+            const cursorDot = document.getElementById('cursor-dot');
+            const cursorRing = document.getElementById('cursor-ring');
+            
+            if (cursorDot && cursorRing) {
+                document.addEventListener('mousemove', (e) => {
+                    cursorDot.style.left = e.clientX + 'px';
+                    cursorDot.style.top = e.clientY + 'px';
+                    
+                    cursorRing.animate({
+                        left: e.clientX + 'px',
+                        top: e.clientY + 'px'
+                    }, { duration: 150, fill: "forwards" });
+                });
+
+                const interactables = document.querySelectorAll('a, button, input, textarea, select, [onclick]');
+                interactables.forEach(node => {
+                    node.addEventListener('mouseenter', () => {
+                        cursorDot.style.width = '36px';
+                        cursorDot.style.height = '36px';
+                        cursorDot.style.backgroundColor = 'transparent';
+                        cursorDot.style.border = '1.5px solid var(--pink)';
+                        cursorRing.style.transform = 'translate(-50%, -50%) scale(1.35)';
+                        cursorRing.style.borderColor = 'var(--pink)';
+                    });
+                    
+                    node.addEventListener('mouseleave', () => {
+                        cursorDot.style.width = '10px';
+                        cursorDot.style.height = '10px';
+                        cursorDot.style.backgroundColor = 'var(--pink)';
+                        cursorDot.style.border = 'none';
+                        cursorRing.style.transform = 'translate(-50%, -50%) scale(1)';
+                        cursorRing.style.borderColor = 'var(--pink)';
+                    });
+                });
+            }
+
+            // 2. Scroll Reveal implementation
+            const revealNodes = document.querySelectorAll('.scroll-reveal');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry, idx) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('active');
+                        }, idx * 60);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            revealNodes.forEach(node => revealObserver.observe(node));
+
+            // 3. Count Up Stats on Scroll observer
+            const statIndicators = document.querySelectorAll('.count-up');
+            
+            const animateCountUp = (node) => {
+                const target = parseInt(node.getAttribute('data-target'), 10);
+                const duration = 2000; // 2s
+                let startTime = null;
+                
+                const step = (currentTime) => {
+                    if (!startTime) startTime = currentTime;
+                    const progress = Math.min((currentTime - startTime) / duration, 1);
+                    
+                    // Easing cubic easeOut formula
+                    const easeOutProgress = 1 - Math.pow(1 - progress, 3);
+                    const currentVal = Math.floor(easeOutProgress * target);
+                    
+                    node.innerText = currentVal.toLocaleString();
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        node.innerText = target.toLocaleString();
+                    }
+                };
+                requestAnimationFrame(step);
+            };
+
+            const statsObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCountUp(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            statIndicators.forEach(elem => statsObserver.observe(elem));
+
+            // 4. Scroll Progress Bar at very top of screen
+            const progressBar = document.getElementById('scroll-progress-bar');
+            const backToTopBtn = document.getElementById('back-to-top');
+            const stickyHeader = document.getElementById('sticky-header');
+
+            window.addEventListener('scroll', () => {
+                const windScroll = document.documentElement.scrollTop || document.body.scrollTop;
+                const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (windScroll / docHeight) * 100;
+                
+                if (progressBar) {
+                    progressBar.style.width = scrolled + '%';
+                }
+
+                // Sticky Header background morphing
+                if (stickyHeader) {
+                    if (window.scrollY > 50) {
+                        stickyHeader.style.backgroundColor = 'rgba(8, 8, 16, 0.92)';
+                        stickyHeader.style.backdropFilter = 'blur(18px)';
+                        stickyHeader.style.borderBottom = '1px solid rgba(255, 255, 255, 0.07)';
+                    } else {
+                        stickyHeader.style.backgroundColor = 'transparent';
+                        stickyHeader.style.backdropFilter = 'none';
+                        stickyHeader.style.borderBottom = 'none';
+                    }
+                }
+
+                // Back to top button appear trigger
+                if (backToTopBtn) {
+                    if (window.scrollY > 300) {
+                        backToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+                        backToTopBtn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-all');
+                    } else {
+                        backToTopBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                        backToTopBtn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-all');
+                    }
+                }
+            });
+
+            // Smooth Scroll Back up to the top
+            if (backToTopBtn) {
+                backToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
+
+        // Interactive Switcher for Reel | Carousel | Meme, matching Dr. Sheela's styling classes
+        function changeShowcaseTab(tabIdx) {
+            const tabs = ['reels', 'carousels', 'memes'];
+            
+            // Toggle active trigger buttons styling classes
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach((btn, idx) => {
+                if (idx === tabIdx) {
+                    btn.className = "tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-300 bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] text-white";
+                } else {
+                    btn.className = "tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white";
+                }
+            });
+
+            // Iterate contents visibility
+            tabs.forEach((tab, idx) => {
+                const pane = document.getElementById('tab-content-' + tab);
+                if (pane) {
+                    if (idx === tabIdx) {
+                        pane.classList.remove('hidden');
+                        setTimeout(() => {
+                            pane.classList.remove('opacity-0');
+                            pane.classList.add('opacity-100');
+                        }, 50);
+                    } else {
+                        pane.classList.add('opacity-0');
+                        pane.classList.remove('opacity-100');
+                        pane.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // Tab switcher for Ad results
+        function changeAdResultsTab(tabIdx) {
+            const tabs = ['overview', 'dm', 'profile'];
+            
+            // Toggle active trigger buttons styling classes
+            const btns = document.querySelectorAll('.ad-tab-btn');
+            btns.forEach((btn, idx) => {
+                if (idx === tabIdx) {
+                    btn.className = "ad-tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-300 bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] text-white";
+                } else {
+                    btn.className = "ad-tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white";
+                }
+            });
+
+            // Iterate contents visibility
+            tabs.forEach((tab, idx) => {
+                const pane = document.getElementById('ad-tab-content-' + tab);
+                if (pane) {
+                    if (idx === tabIdx) {
+                        pane.classList.remove('hidden');
+                        setTimeout(() => {
+                            pane.classList.remove('opacity-0');
+                            pane.classList.add('opacity-100');
+                        }, 50);
+                    } else {
+                        pane.classList.add('opacity-0');
+                        pane.classList.remove('opacity-100');
+                        pane.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // Open Real Image representation in Lightbox Modal
+        function openAdResultsLightbox(src, title, desc) {
+            const modal = document.getElementById('lightbox-modal');
+            const boxTitle = document.getElementById('lightbox-title');
+            const boxDesc = document.getElementById('lightbox-desc');
+            const container = document.getElementById('lightbox-container');
+            let img = document.getElementById('lightbox-img');
+            
+            if (!img && container) {
+                img = document.createElement('img');
+                img.id = 'lightbox-img';
+                img.className = 'max-w-full max-h-[50vh] object-contain rounded-xl border border-white/10 mb-6 hidden';
+                container.insertBefore(img, boxTitle);
+            }
+            
+            if (modal && boxTitle && boxDesc) {
+                boxTitle.textContent = title;
+                boxDesc.textContent = desc;
+                
+                if (img && src) {
+                    img.src = src;
+                    img.classList.remove('hidden');
+                } else if (img) {
+                    img.classList.add('hidden');
+                }
+                
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.classList.add('opacity-100');
+                    if (container) {
+                        container.classList.remove('scale-95');
+                        container.classList.add('scale-100');
+                    }
+                }, 50);
+                
+                document.body.classList.add('overflow-hidden');
+            }
+        }
+
+        // Lightbox Zoom Trigger for Placeholders
+        function openLightboxPlaceholder(title, desc) {
+            const modal = document.getElementById('lightbox-modal');
+            const boxTitle = document.getElementById('lightbox-title');
+            const boxDesc = document.getElementById('lightbox-desc');
+            const container = document.getElementById('lightbox-container');
+            const img = document.getElementById('lightbox-img');
+            
+            if (img) {
+                img.classList.add('hidden');
+            }
+            
+            if (modal && boxTitle && boxDesc) {
+                boxTitle.textContent = title;
+                boxDesc.textContent = desc;
+                
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.classList.add('opacity-100');
+                    if (container) {
+                        container.classList.remove('scale-95');
+                        container.classList.add('scale-100');
+                    }
+                }, 50);
+                
+                document.body.classList.add('overflow-hidden');
+            }
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            const container = document.getElementById('lightbox-container');
+            if (modal) {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                if (container) {
+                    container.classList.remove('scale-100');
+                    container.classList.add('scale-95');
+                }
+                
+                setTimeout(() => {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                }, 300);
+            }
+        }
+
+        // Play Video Testimonial dynamically with youtube embed
+        function playVideoTestimonial() {
+            const container = document.getElementById('video-test-container');
+            if (container) {
+                container.innerHTML = `<iframe src="https://www.youtube.com/embed/56TQ6L6OlvY?autoplay=1" title="Adithi Sarovar Video Testimonial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen class="absolute inset-0 w-full h-full rounded-2xl pointer-events-auto z-30"></iframe>`;
+                container.removeAttribute('onclick');
+                container.classList.remove('cursor-pointer');
+            }
+        }
+
+        // Close on ESC key or clicking outside the container
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+        
+        document.getElementById('lightbox-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+    </script>
+    <!-- Lightbox Modal for Placeholder Zooming -->
+    <div id="lightbox-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[9999] hidden flex-col justify-center items-center p-4 transition-all duration-300 opacity-0 select-none">
+        <!-- Close button top right -->
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 md:top-8 md:right-12 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all duration-200 cursor-pointer text-xl md:text-2xl font-light leading-none z-50 shadow-md flex items-center justify-center w-12 h-12" aria-label="Close Preview">
+            ✕
+        </button>
+        <!-- Content Container -->
+        <div class="relative max-w-4xl max-h-[85vh] flex flex-col justify-center items-center bg-[#0e0e1a] border border-white/15 p-8 md:p-12 rounded-2xl w-full max-w-2xl drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] text-center scale-95 transition-transform duration-300" id="lightbox-container">
+            <div class="w-16 h-16 rounded-full bg-pink/15 flex items-center justify-center text-pink text-3xl mx-auto mb-6">
+                ✨
+            </div>
+            <h4 id="lightbox-title" class="font-display font-extrabold text-2xl text-white uppercase tracking-wider mb-4"></h4>
+            <p id="lightbox-desc" class="font-sans text-sm md:text-base text-white/70 leading-relaxed max-w-lg mx-auto mb-6"></p>
+            <div class="border-t border-white/10 pt-4 w-full">
+                <span class="text-[10px] uppercase font-mono tracking-widest text-[#00AEEF]">Interactive Mockup Blueprint Spec</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

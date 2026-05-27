@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Sheela Nambiar Case Study | Pixels & Prompts</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Caveat:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#080810',
+                        card: '#0e0e1a',
+                        blue: '#2C48D4',
+                        pink: '#FF67FF',
+                        deep: '#1D1D7F',
+                        eblue: '#00AEEF',
+                        white: '#FFFFFF',
+                    },
+                    fontFamily: {
+                        sans: ['DM Sans', 'Plus Jakarta Sans', 'sans-serif'],
+                        body: ['DM Sans', 'Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Fraunces', 'Space Grotesk', 'serif'],
+                        handwritten: ['Caveat', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Style Injection for Animations & Hover states -->
+    <style>
+        :root {
+            --black: #080810;
+            --card: #0e0e1a;
+            --blue: #2C48D4;
+            --pink: #FF67FF;
+            --deep: #1D1D7F;
+            --eblue: #00AEEF;
+            --white: #FFFFFF;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--pink);
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+        
+        .custom-cursor-ring {
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid var(--pink);
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%) scale(1);
+            transition: transform 0.2s ease-out, border-color 0.3s;
+        }
+
+        /* Ambient Blobs Animation */
+        @keyframes drift {
+            0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+            33% { transform: translate(40px, -50px) scale(1.1) rotate(90deg); }
+            66% { transform: translate(-30px, 30px) scale(0.95) rotate(180deg); }
+            100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
+        }
+        
+        .blob-electric-blue {
+            animation: drift 14s ease-in-out infinite alternate;
+        }
+        .blob-pink {
+            animation: drift 10s ease-in-out infinite alternate-reverse;
+        }
+        .blob-deep-blue {
+            animation: drift 12s ease-in-out infinite alternate;
+        }
+
+        /* Hide Scrollbar for tabs container on mobile */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        /* Intersection Observer transition presets */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Image Placeholder Spec Styling */
+        .image-placeholder {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .image-placeholder:hover {
+            border-style: solid;
+            border-color: rgba(255, 103, 255, 0.3);
+            background-color: rgba(255, 103, 255, 0.03);
+        }
+
+        .image-placeholder-label {
+            font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif;
+            font-weight: 300;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 16px;
+            pointer-events: none;
+        }
+
+        /* Smooth scroll overrides */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="antialiased select-none md:select-text">
+
+    <!-- Scroll Top Progress Line -->
+    <div class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-[#2C48D4] with-[#00AEEF] to-[#FF67FF] z-[999] transition-all duration-75" id="scroll-progress-bar" style="width: 0%;"></div>
+
+    <!-- Custom Cursor elements -->
+    <div class="custom-cursor-dot hidden lg:block" id="cursor-dot"></div>
+    <div class="custom-cursor-ring hidden lg:block" id="cursor-ring"></div>
+
+    <!-- Background Drift Blobs -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Electric Blue top-right -->
+        <div class="absolute top-[10%] right-[-10%] w-[35vw] h-[35vw] min-w-[300px] min-h-[300px] bg-eblue/15 rounded-full blur-[120px] blob-electric-blue"></div>
+        <!-- Pink bottom-left -->
+        <div class="absolute top-[60%] left-[-15%] w-[40vw] h-[40vw] min-w-[320px] min-h-[320px] bg-pink/10 rounded-full blur-[130px] blob-pink"></div>
+        <!-- Deep Blue center -->
+        <div class="absolute top-[35%] left-[30%] w-[38vw] h-[38vw] min-w-[300px] min-h-[300px] bg-blue/12 rounded-full blur-[140px] blob-deep-blue"></div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 z-50 p-4 border border-white/10 bg-black/80 hover:bg-pink text-white hover:text-black hover:border-pink rounded-full opacity-0 translate-y-10 pointer-events-none transition-all duration-300 shadow-xl" aria-label="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+        </svg>
+    </button>
+
+    <!-- STICKY HEADER -->
+    <header id="sticky-header" class="fixed top-0 left-0 right-0 h-16 z-50 flex items-center px-6 md:px-12 transition-all duration-300">
+        <div class="w-full max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Left Side Logo -->
+            <a href="/index.html" class="flex items-center gap-3 font-display font-extrabold text-[20px] md:text-2xl tracking-tighter text-[#00AEEF] hover:opacity-95 transition-opacity">
+                <svg className="w-8 h-8" class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="logoGradSheelaNav" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#00CEFF" />
+          <stop offset="35%" stopColor="#2E4AEC" />
+          <stop offset="75%" stopColor="#9C20FE" />
+          <stop offset="100%" stopColor="#E23EFF" />
+        </linearGradient>
+        <pattern id="logoGridSheelaNav" width="4.1667" height="4.1667" patternUnits="userSpaceOnUse">
+          <rect width="4.1667" height="4.1667" fill="none" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="0.5" />
+        </pattern>
+        <clipPath id="logoClipSheelaNav">
+          <circle cx="50" cy="50" r="46" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#logoClipSheelaNav)">
+        <circle cx="50" cy="50" r="46" fill="url(#logoGradSheelaNav)" />
+        <rect x="0" y="0" width="100" height="100" fill="url(#logoGridSheelaNav)" />
+      </g>
+      <rect x="50.3500" y="25.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="29.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="29.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="37.8500" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="33.6833" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="37.8500" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="29.5167" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="33.6833" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="37.8500" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="62.8500" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="29.5167" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="33.6833" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="58.6833" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="62.8500" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="29.5167" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="54.5167" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="58.6833" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="62.8500" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="54.5167" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="58.6833" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="54.5167" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="71.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="71.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="75.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+    </svg>
+                <span class="bg-gradient-to-r from-[#2C48D4] via-[#00AEEF] to-[#FF67FF] bg-clip-text text-transparent">Pixels & Prompts</span>
+            </a>
+
+            <!-- Center smooth scroll links -->
+            <div class="hidden md:flex items-center gap-6 lg:gap-8">
+                <a href="#overview" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">Overview</a>
+                <a href="#results" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">Results</a>
+                <a href="#our-work" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">Our Work</a>
+                <a href="#process" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">Process</a>
+                <a href="#testimonial" class="font-sans font-medium text-white/60 hover:text-white text-[13px] tracking-wide transition-colors duration-200">Testimonial</a>
+            </div>
+
+            <!-- Right Side CTA Pill -->
+            <div>
+                <a href="https://calendly.com/pixelsnprompts/30min" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] hover:shadow-[0_0_20px_rgba(255,103,255,0.45)] text-white font-display font-bold text-xs uppercase tracking-wider transition-all duration-300 block">
+                    Work With Us
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT BACKDROP WRAPPER -->
+    <main class="w-full relative z-10">
+
+        <!-- SECTION 1: HERO -->
+        <section class="max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-24 md:pb-32">
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 mb-8 font-sans text-xs uppercase tracking-widest text-[#FFFFFF]/45 animate-line" style="animation-delay: 0.1s;">
+                <a href="/index.html" class="hover:text-white transition-colors">Pixels & Prompts</a>
+                <span>→</span>
+                <a href="/index.html#work" class="hover:text-white transition-colors">Our Work</a>
+                <span>→</span>
+                <span class="text-[#FF67FF]">Dr. Sheela Nambiar</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <!-- Left Column (60% width) -->
+                <div class="lg:col-span-7 flex flex-col items-start select-text">
+                    <!-- Tag badge row -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="px-4 py-1.5 rounded-full bg-eblue/15 text-eblue font-handwritten text-xl font-bold tracking-wide">Brand Identity</span>
+                        <span class="px-4 py-1.5 rounded-full bg-pink/15 text-pink font-handwritten text-xl font-bold tracking-wide">Instagram Management</span>
+                    </div>
+
+                    <!-- Main stagger headlines -->
+                    <h1 class="font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#00AEEF] via-[#FF67FF] to-[#00AEEF] leading-tight tracking-tight mb-6 uppercase text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl whitespace-nowrap stagger-line opacity-0 transform translate-y-[30px]" style="transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;">
+                        Dr. Sheela Nambiar MD
+                    </h1>
+
+                    <p class="font-sans text-[17px] md:text-[18px] text-[#FFFFFF]/65 leading-relaxed mb-8 max-w-[540px] stagger-line opacity-0 transform translate-y-[30px]" style="transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;">
+                        Dr. Sheela Nambiar is an OB/GYN, lifestyle medicine physician, and positive psychology practitioner. Her expertise was undeniable. Her Instagram did not show it yet. We changed that.
+                    </p>
+
+                    <!-- Meta row -->
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-4 font-sans text-xs md:text-sm text-[#FFFFFF]/45 border-t border-white/10 pt-6 min-w-full lg:min-w-0 stagger-line opacity-0 transform translate-y-[30px]" style="transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;">
+                        <span class="flex items-center gap-1.5"><strong class="text-pink font-mono uppercase bg-[#FF67FF]/10 px-2.5 py-1 rounded border border-[#FF67FF]/15">Duration: 6+ Months</strong></span>
+                        <span class="hidden sm:inline text-white/20">|</span>
+                        <span class="flex items-center gap-1.5"><strong class="text-[#FF67FF] font-mono uppercase bg-[#FF67FF]/10 px-2.5 py-1 rounded border border-[#FF67FF]/15">Platform: Instagram</strong></span>
+                        <span class="hidden sm:inline text-white/20">|</span>
+                        <span class="flex items-center gap-1.5"><strong class="text-[#FF67FF] font-mono uppercase bg-[#FF67FF]/10 px-2.5 py-1 rounded border border-[#FF67FF]/15">Type: Organic Growth</strong></span>
+                    </div>
+                </div>
+
+                <!-- Right Column / Hero Portrait (40% width) -->
+                <div class="lg:col-span-5 relative w-full flex justify-center">
+                    <!-- Subtle Glow Backdrop -->
+                    <div class="absolute -inset-2.5 bg-gradient-to-tr from-[#00AEEF] to-[#FF67FF] rounded-[24px] blur-xl opacity-30 animate-pulse pointer-events-none"></div>
+
+                    <!-- Portrait frame styled as dynamic Polaroid/sticker from homepage -->
+                    <div class="relative w-full max-w-[420px] aspect-[3/4] rounded-2xl overflow-hidden bg-white p-1.5 border-[5px] border-white shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform -rotate-[1.5deg] hover:rotate-0 hover:scale-[1.03] transition-all duration-300 group"
+                         style="box-shadow: 0 12px 28px rgba(0,0,0,0.4), 0 0 35px rgba(0,174,239,0.25)">
+                        <img src="https://siyahi.in/wordpress/wp-content/uploads/2016/09/Dr-Sheela-Nambiar.jpeg" 
+                             class="absolute inset-0 w-full h-full object-cover rounded-lg grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500" 
+                             referrerpolicy="no-referrer"
+                             alt="Dr. Sheela Nambiar professional portrait" />
+                        
+                        <!-- Overlay overlay gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#080810]/95 via-[#080810]/20 to-transparent flex flex-col justify-end p-6 md:p-8 pointer-events-none z-10 rounded-lg">
+                            <span class="font-handwritten text-xl text-[#00AEEF] block mb-1">Obstetrician, Gynecologist, &</span>
+                            <h3 class="font-display font-extrabold text-base md:text-lg text-white uppercase tracking-tight leading-none mb-1">Lifestyle Medicine Specialist</h3>
+                            <p class="text-[9px] font-mono text-white/40 uppercase tracking-widest leading-none">30+ years clinical authority</p>
+                        </div>
+                        
+                        <!-- Mini marker badge -->
+                        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/5 font-mono text-[9px] text-[#FF67FF] uppercase tracking-widest z-10">
+                            Official Case Study
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: RESULTS SNAPSHOT (id="results") -->
+        <section id="results" class="bg-card w-full py-24 select-text border-y border-white/5 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-12 md:mb-16 scroll-reveal">
+                    <span class="font-handwritten text-pink text-2xl font-semibold block mb-2">→ The Numbers</span>
+                    <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-3xl md:text-4xl tracking-tight leading-tight">
+                        Four months of consistent work. <br />Here is what changed.
+                    </h2>
+                </div>
+
+                <!-- 5 Stat Cards in responsive grid (3 top, 2 bottom) -->
+                <div class="grid grid-cols-1 md:grid-cols-6 gap-6 md:gap-8 mb-12">
+                    <!-- Stat Card 1 -->
+                    <div class="md:col-span-2 bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.08)] transition-all duration-300 scroll-reveal">
+                        <!-- Icon center -->
+                        <div class="text-[#FF67FF] opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </div>
+                        <!-- Numbers -->
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-3">
+                            <span class="count-up" data-target="1018">0</span>
+                            <span class="text-[#FF67FF]/60 text-lg sm:text-xl font-sans font-light">→</span>
+                            <span class="count-up" data-target="3555">0</span>
+                        </div>
+                        <!-- Label -->
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-sm uppercase tracking-wider block mt-3">
+                            Accounts Reached
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 2 -->
+                    <div class="md:col-span-2 bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.08)] transition-all duration-300 scroll-reveal">
+                        <!-- Icon center -->
+                        <div class="text-[#00AEEF] opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                                <polyline points="17 6 23 6 23 12" />
+                            </svg>
+                        </div>
+                        <!-- Numbers -->
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-3">
+                            <span class="count-up" data-target="2381">0</span>
+                            <span class="text-eblue/60 text-lg sm:text-xl font-sans font-light">→</span>
+                            <span class="count-up" data-target="15460">0</span>
+                        </div>
+                        <!-- Label -->
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-sm uppercase tracking-wider block mt-3">
+                            Impressions
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 3 -->
+                    <div class="md:col-span-2 bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.08)] transition-all duration-300 scroll-reveal">
+                        <!-- Icon center -->
+                        <div class="text-blue opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10" />
+                                <line x1="12" y1="20" x2="12" y2="4" />
+                                <line x1="6" y1="20" x2="6" y2="14" />
+                            </svg>
+                        </div>
+                        <!-- Numbers -->
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-3">
+                            <span class="count-up" data-target="1152">0</span>
+                            <span class="text-blue/60 text-lg sm:text-xl font-sans font-light">→</span>
+                            <span class="count-up" data-target="3333">0</span>
+                        </div>
+                        <!-- Label -->
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-sm uppercase tracking-wider block mt-3">
+                            Posts Growth
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 4 (Below Bottom Column 1) -->
+                    <div class="md:col-start-2 md:col-span-2 bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.08)] transition-all duration-300 scroll-reveal">
+                        <!-- Icon center -->
+                        <div class="text-[#FF67FF] opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polygon points="10 8 16 12 10 16 10 8" />
+                            </svg>
+                        </div>
+                        <!-- Numbers -->
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-3">
+                            <span class="count-up" data-target="417">0</span>
+                            <span class="text-[#FF67FF]/60 text-lg sm:text-xl font-sans font-light">→</span>
+                            <span class="count-up" data-target="1174">0</span>
+                        </div>
+                        <!-- Label -->
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-sm uppercase tracking-wider block mt-3">
+                            Reels Growth
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 5 (Below Bottom Column 2) -->
+                    <div class="md:col-span-2 bg-[#080810] border border-white/5 rounded-[16px] p-8 flex flex-col items-center text-center justify-between min-h-[220px] group hover:-translate-y-1.5 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.08)] transition-all duration-300 scroll-reveal">
+                        <!-- Icon center -->
+                        <div class="text-[#00AEEF] opacity-85 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
+                        </div>
+                        <!-- Numbers -->
+                        <div class="font-display font-extrabold text-white text-[38px] md:text-[44px] tracking-tighter leading-none flex items-center justify-center gap-3">
+                            <span class="count-up" data-target="287">0</span>
+                            <span class="text-eblue/60 text-lg sm:text-xl font-sans font-light">→</span>
+                            <span class="count-up" data-target="678">0</span>
+                        </div>
+                        <!-- Label -->
+                        <div class="font-sans font-medium text-[#FFFFFF]/45 text-sm uppercase tracking-wider block mt-3">
+                            Stories Growth
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Summary Text -->
+                <div class="text-center max-w-4xl mx-auto scroll-reveal">
+                    <p class="font-sans text-[16px] md:text-[18px] text-[#FFFFFF]/80 leading-relaxed">
+                        Improved visibility and consistency through structured content pillars, strong creative templates, and a repeatable posting rhythm.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: THE SITUATION (id="overview") -->
+        <section id="overview" class="py-24 max-w-7xl mx-auto px-6 md:px-12 select-text">
+            <div class="mb-6 scroll-reveal">
+                <span class="font-handwritten text-[#00AEEF] text-2xl font-semibold block mb-2">→ The Situation</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+                <!-- Left Column Headline -->
+                <div class="lg:col-span-12 scroll-reveal">
+                    <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-3xl md:text-4xl leading-snug tracking-tight max-w-4xl">
+                        A doctor with 30 years of expertise.<br class="hidden md:inline" /> An Instagram that was not keeping up.
+                    </h2>
+                </div>
+
+                <!-- Right Column Body -->
+                <div class="lg:col-span-7 font-sans text-base md:text-[17px] text-[#FFFFFF]/70 leading-[1.85] space-y-6 scroll-reveal" style="transition-delay: 0.25s;">
+                    <p>
+                        Dr. Sheela Nambiar is the kind of expert you want in your corner. A qualified OB/GYN, lifestyle medicine physician, positive psychology practitioner, and fitness consultant — she has spent decades helping women build healthier, more fulfilling lives.
+                    </p>
+                    <p class="font-bold text-[#FFFFFF]">
+                        Her expertise? Undeniable. <br />
+                        Her Instagram? Not quite keeping up.
+                    </p>
+                    <p>
+                        When she came to us, the content was not reflecting the depth of what she offers. There was no consistent visual identity, no clear content direction, and the page was not building the kind of trust that her work deserved.
+                    </p>
+                    <p class="font-bold text-[#00AEEF]">
+                        Women with her level of authority should have a digital presence that matches it.
+                    </p>
+                    <p class="border-t border-white/10 pt-6 mt-6">
+                        That is where we came in.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: THE GOALS -->
+        <section class="bg-card w-full py-24 select-text border-y border-white/5 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-12 scroll-reveal">
+                    <span class="font-handwritten text-pink text-2xl font-semibold block mb-2">→ The Ask</span>
+                    <h2 class="font-display font-extrabold text-white text-2xl sm:text-3xl md:text-4xl uppercase leading-tight tracking-tight">
+                        What we were building toward.
+                    </h2>
+                </div>
+
+                <!-- 2x2 Grid of Goals -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl">
+                    <!-- Goal 1 -->
+                    <div class="bg-[#080810] border-l-[3px] border-[#2C48D4] rounded-r-[12px] p-8 md:p-10 flex flex-col justify-between hover:border-[#00AEEF] transition-colors duration-300 scroll-reveal">
+                        <span class="font-handwritten text-[48px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#2C48D4] to-[#00AEEF] leading-none mb-4 select-none">01</span>
+                        <p class="font-sans text-[16px] md:text-[18px] text-[#FFFFFF]/90 leading-relaxed font-light">
+                            Create a clear brand identity foundation for a medical and lifestyle expert
+                        </p>
+                    </div>
+
+                    <!-- Goal 2 -->
+                    <div class="bg-[#080810] border-l-[3px] border-[#2C48D4] rounded-r-[12px] p-8 md:p-10 flex flex-col justify-between hover:border-[#00AEEF] transition-colors duration-300 scroll-reveal">
+                        <span class="font-handwritten text-[48px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00AEEF] to-[#FF67FF] leading-none mb-4 select-none">02</span>
+                        <p class="font-sans text-[16px] md:text-[18px] text-[#FFFFFF]/90 leading-relaxed font-light">
+                            Build a consistent Instagram presence that feels credible and human
+                        </p>
+                    </div>
+
+                    <!-- Goal 3 -->
+                    <div class="bg-[#080810] border-l-[3px] border-[#2C48D4] rounded-r-[12px] p-8 md:p-10 flex flex-col justify-between hover:border-[#00AEEF] transition-colors duration-300 scroll-reveal">
+                        <span class="font-handwritten text-[48px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#2C48D4] to-[#FF67FF] leading-none mb-4 select-none">03</span>
+                        <p class="font-sans text-[16px] md:text-[18px] text-[#FFFFFF]/90 leading-relaxed font-light">
+                            Improve reach and visibility through a repeatable content engine
+                        </p>
+                    </div>
+
+                    <!-- Goal 4 -->
+                    <div class="bg-[#080810] border-l-[3px] border-[#2C48D4] rounded-r-[12px] p-8 md:p-10 flex flex-col justify-between hover:border-[#00AEEF] transition-colors duration-300 scroll-reveal">
+                        <span class="font-handwritten text-[48px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] leading-none mb-4 select-none">04</span>
+                        <p class="font-sans text-[16px] md:text-[18px] text-[#FFFFFF]/90 leading-relaxed font-light">
+                            Establish content pillars that make her expertise easy to understand and follow
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: OUR APPROACH -->
+        <section class="py-24 max-w-7xl mx-auto px-6 md:px-12 select-text">
+            <div class="mb-12 scroll-reveal">
+                <span class="font-handwritten text-[#00AEEF] text-2xl font-semibold block mb-2">→ How We Worked</span>
+                <h2 class="font-display font-extrabold text-white text-2xl sm:text-3xl md:text-4xl uppercase leading-tight tracking-tight max-w-3xl mb-6">
+                    Two people. Two disciplines. <br />One unified brand.
+                </h2>
+                <p class="font-sans text-[17px] md:text-[18px] text-[#FFFFFF]/70 leading-relaxed max-w-[680px]">
+                    Before any content went live, we started with the audience. Dr. Sheela's followers are women at various stages of life — navigating questions about fitness, hormonal health, nutrition, mental wellbeing, and aging. They are not looking for clinical jargon. They want reliable, warm, actionable guidance from someone who actually knows what she is talking about. <br /><br />So we built content that lived at the intersection of those two things: deeply informed, but genuinely readable.
+                </p>
+            </div>
+
+            <!-- Two Role Cards Side-by-Side (Slightly Offset) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 pt-8 max-w-4xl mx-auto">
+                <!-- Priyanka Card (-1deg offset) -->
+                <div class="bg-card border-t-[3px] border-l border-r border-b border-white/10 border-t-[#FF67FF] p-8 rounded-2xl md:-rotate-1 hover:rotate-0 transition-transform duration-300 flex flex-col gap-6 shadow-2xl scroll-reveal">
+                    <!-- Polaroid Sticker Photo Frame -->
+                    <div class="relative group aspect-[4/3] w-full rounded-2xl overflow-hidden cursor-pointer bg-white p-1.5 border-[5px] border-white shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform -rotate-[1.5deg] hover:rotate-0 hover:scale-[1.03] transition-all duration-300"
+                         style="box-shadow: 0 12px 28px rgba(0,0,0,0.4), 0 0 35px rgba(255,103,255,0.25)">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRFhxNiw_5lXZZv1rmZK5_Z9YCYncSdKGXhWONROD1eUkdjLfc4zw-LLoIe47LacuSv5xM8TBy_yKGBovUHkA8nK6VcUNMLQr4tpQpHBRhCIDm4Qgz1waBnb5WziuSDuT6RLhwivCurC_qaa8dw6hPWmuMOIYQrbzTUBacQ-uA8ShYH3r-7X0KzUFisluBq7-VZYoey8B4J3E3xxJJWgxi9QDbhly_iwmb8sa2Y3hr8gKPGPIfelLyvlJtOLskUrvh2G4xKNRpAsc" 
+                             class="absolute inset-0 w-full h-full grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 rounded-lg object-cover object-center" 
+                             referrerpolicy="no-referrer"
+                             alt="Priyanka - Marketing Strategist" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 flex flex-col justify-end p-4 rounded-lg">
+                            <span class="font-mono text-[9px] text-[#FF67FF] uppercase tracking-widest">Co-Founder</span>
+                            <span class="font-display font-bold text-sm text-white">Priyanka</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <span class="font-handwritten text-[#FF67FF] text-xl font-bold tracking-wide">Marketing Strategist</span>
+                        <h3 class="font-display font-extrabold text-2xl text-white uppercase tracking-tight mt-1 mb-3">Priyanka</h3>
+                        <p class="font-sans text-[14px] text-[#FFFFFF]/75 leading-relaxed">
+                            Content strategy and pillars, monthly content calendars, caption writing in Dr. Sheela's voice, community management, hashtag research, monthly analytics reporting, and the overall strategic direction of the page.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Rashi Card (+1deg offset) -->
+                <div class="bg-card border-t-[3px] border-l border-r border-b border-white/10 border-t-[#00AEEF] p-8 rounded-2xl md:rotate-1 hover:rotate-0 transition-transform duration-300 flex flex-col gap-6 shadow-2xl scroll-reveal">
+                    <!-- Polaroid Sticker Photo Frame -->
+                    <div class="relative group aspect-[4/3] w-full rounded-2xl overflow-hidden cursor-pointer bg-white p-1.5 border-[5px] border-white shadow-[0_12px_24px_rgba(0,0,0,0.5)] transform rotate-[1.5deg] hover:rotate-0 hover:scale-[1.03] transition-all duration-300"
+                         style="box-shadow: 0 12px 28px rgba(0,0,0,0.4), 0 0 35px rgba(0,174,239,0.25)">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoAxFRHKYAQ4MYQ_HV-4j5ObjJDrWtTRWWhRcl8uZ79O4OoLuGBHoPrtlgNPUyjApO1sUO55DQ5LowHd45bc2L7SLoAAu8vNPYggThvRehhTNfpNcx_XOhGk0qMUFFmpLn9Sm_Y07v8GoCI31grKWOJTQrQTVCY5j61sGQ4y6fB4j3YhJUtxqs2DgC740l_l4gBgFWnNEodZCvv6JHJXsiUPN6ssa1QmkD4Y22KZBlLp2plwsdQMeyr254aBAWsfqIt-PaLS9OB9lcow" 
+                             class="absolute inset-0 w-full h-full grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 rounded-lg object-cover object-[center_12%]" 
+                             referrerpolicy="no-referrer"
+                             alt="Rashi - Brand Designer" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 flex flex-col justify-end p-4 rounded-lg">
+                            <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest">Co-Founder</span>
+                            <span class="font-display font-bold text-sm text-white">Rashi</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="font-handwritten text-[#00AEEF] text-xl font-bold tracking-wide">Brand Designer</span>
+                        <h3 class="font-display font-extrabold text-2xl text-white uppercase tracking-tight mt-1 mb-3">Rashi</h3>
+                        <p class="font-sans text-[14px] text-[#FFFFFF]/75 leading-relaxed">
+                            Brand identity foundation, full visual language system, color palette, typography direction, all graphic assets, reel cover designs, story templates, carousel slide design, and the overall aesthetic that made everything feel cohesive.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: PROOF OF WORK (id="our-work") -->
+        <section id="our-work" class="bg-card w-full py-24 select-text border-y border-white/5 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-14 scroll-reveal overflow-visible text-center max-w-3xl mx-auto">
+                    <span class="font-handwritten text-[#FF67FF] text-2xl font-bold block mb-2">→ Proof of Work</span>
+                    <h2 class="font-display font-extrabold text-[#00AEEF] text-3xl sm:text-4xl md:text-5xl uppercase leading-tight tracking-tight mb-4">
+                        Creative Showcase
+                    </h2>
+                    <p class="text-xs text-white/50 mt-3 font-mono">
+                        💡 Explore reels, infographics, and carousel layouts curated to engage and educate.
+                    </p>
+                </div>
+
+                <!-- TAB CONTAINER FOR SAMPLES -->
+                <div class="w-full mt-12 bg-[#080810] border border-white/5 rounded-[40px] p-6 md:p-10 scroll-reveal">
+                    
+                    <!-- TAB CONTROLLER BAR -->
+                    <div class="flex justify-start md:justify-center items-center gap-3 overflow-x-auto pb-4 mb-10 no-scrollbar">
+                        <button onclick="changeShowcaseTab(0)" id="tab-trigger-0" class="tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-300 bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] text-white">
+                            🎬 REELS
+                        </button>
+                        <button onclick="changeShowcaseTab(1)" id="tab-trigger-1" class="tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white">
+                            🎨 INFOGRAPHICS
+                        </button>
+                        <button onclick="changeShowcaseTab(2)" id="tab-trigger-2" class="tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white">
+                            📊 CAROUSELS
+                        </button>
+                    </div>
+
+                    <!-- TAB CONTENTS -->
+                    <!-- TAB 1 — REELS SAMPLES -->
+                    <div id="tab-content-reels" class="tab-pane block opacity-100 transition-opacity duration-300">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- Reel 1 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/reels/C-Xcbp-SqgB/" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(44,72,212,0.35)] hover:border-white/20">
+                                    <!-- Rotating/shifting gradient placeholder -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#2C48D4] to-[#00AEEF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-2 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Play Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reel UI Overlay -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold">Nutrition</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">21 Day Sugar Challenge</h5>
+                                        <span class="text-[9px] text-emerald-400 block mt-1 font-body font-bold">🎬 Watch Reel ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">21 Sugar Challenge</h4>
+                                    <a href="https://www.instagram.com/reels/C-Xcbp-SqgB/" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Reel 2 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/reels/C_-HpBbtPbL/" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(44,72,212,0.35)] hover:border-white/20">
+                                    <!-- Rotating/shifting gradient placeholder -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#2C48D4] to-[#00AEEF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:-rotate-2 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Play Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reel UI Overlay -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold">Mindfulness</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">Box Breathing 101</h5>
+                                        <span class="text-[9px] text-[#FF67FF] block mt-1 font-body font-bold">🎬 Watch Reel ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">Box Breathing with Dr. Sheela</h4>
+                                    <a href="https://www.instagram.com/reels/C_-HpBbtPbL/" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+ 
+                            <!-- Reel 3 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/reels/C9KTmx4Ix2p/" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(44,72,212,0.35)] hover:border-white/20">
+                                    <!-- Rotating/shifting gradient placeholder -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#2C48D4] to-[#00AEEF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-2 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Play Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reel UI Overlay -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold">Fitness</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">Exercise During Periods?</h5>
+                                        <span class="text-[9px] text-emerald-400 block mt-1 font-body font-bold">🎬 Watch Reel ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">Exercise During Periods?</h4>
+                                    <a href="https://www.instagram.com/reels/C9KTmx4Ix2p/" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+ 
+                    <!-- TAB 2 — INFOGRAPHICS -->
+                    <div id="tab-content-infographics" class="tab-pane hidden opacity-0 transition-opacity duration-300">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- Info 1 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/C-o27NPyD1P/?utm_source=ig_embed&ig_rid=d7875655-daaa-4d91-8320-376252c2817b" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(255,103,255,0.3)] hover:border-white/20">
+                                    <!-- Shifting brand colors -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#00AEEF] to-[#FF67FF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-1 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Document Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                <line x1="9" y1="9" x2="15" y2="9" />
+                                                <line x1="9" y1="13" x2="15" y2="13" />
+                                                <line x1="9" y1="17" x2="13" y2="17" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Brand Template UI Mockup -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold font-bold">Guidance</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">6 Signs You Need a No-Sugar Diet</h5>
+                                        <span class="text-[9px] text-pink block mt-1 font-body font-bold">📊 Swipe Slide ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">6 Signs You Need a No-Sugar Diet</h4>
+                                    <a href="https://www.instagram.com/p/C-o27NPyD1P/?utm_source=ig_embed&ig_rid=d7875655-daaa-4d91-8320-376252c2817b" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+ 
+                            <!-- Info 2 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/DBvP_WcTFgA/?utm_source=ig_embed&ig_rid=d7724530-c41d-4def-9803-be74b7d880a3" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(255,103,255,0.3)] hover:border-white/20">
+                                    <!-- Shifting brand colors -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#00AEEF] to-[#FF67FF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:-rotate-1 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Document Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                <line x1="9" y1="9" x2="15" y2="9" />
+                                                <line x1="9" y1="13" x2="15" y2="13" />
+                                                <line x1="9" y1="17" x2="13" y2="17" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Brand Template UI Mockup -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold font-bold">Neurology</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">What Your Brain Releases During Exercise</h5>
+                                        <span class="text-[9px] text-[#FF67FF] block mt-1 font-body font-bold">📊 Swipe Slide ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">What Your Brain Releases When You Exercise</h4>
+                                    <a href="https://www.instagram.com/p/DBvP_WcTFgA/?utm_source=ig_embed&ig_rid=d7724530-c41d-4def-9803-be74b7d880a3" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+ 
+                            <!-- Info 3 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/C6OErN5yQmG/?utm_source=ig_embed&ig_rid=78b9b5e3-3927-41af-8a22-cf276ab132e2" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(255,103,255,0.3)] hover:border-white/20">
+                                    <!-- Shifting brand colors -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#00AEEF] to-[#FF67FF] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-1 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Centered Document Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                <line x1="9" y1="9" x2="15" y2="9" />
+                                                <line x1="9" y1="13" x2="15" y2="13" />
+                                                <line x1="9" y1="17" x2="13" y2="17" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Brand Template UI Mockup -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold font-bold">Lifestyle</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">Foods You Should Avoid Before Bed</h5>
+                                        <span class="text-[9px] text-pink block mt-1 font-body font-bold">📊 Swipe Slide ↗</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">Foods You Should Avoid Before Bed</h4>
+                                    <a href="https://www.instagram.com/p/C6OErN5yQmG/?utm_source=ig_embed&ig_rid=78b9b5e3-3927-41af-8a22-cf276ab132e2" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+ 
+                    <!-- TAB 3 — CAROUSELS -->
+                    <div id="tab-content-carousels" class="tab-pane hidden opacity-0 transition-opacity duration-300">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- Carousel 1 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/C9hXbvuSmMH/?utm_source=ig_embed&ig_rid=17f17b08-447d-449d-ba17-150c391ce67e" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(255,103,255,0.35)] hover:border-white/20">
+                                    <!-- Rotating/shifting gradient from pink/magenta to blue -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#FF67FF] to-[#2C48D4] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-1 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Slide Indicator Overlay -->
+                                    <div class="absolute top-4 right-4 bg-black/55 backdrop-blur-md px-2.5 py-1 rounded-full text-[9px] font-mono tracking-widest text-white/80 z-10 select-none">
+                                        1/5 SLIDES
+                                    </div>
+                                    
+                                    <!-- Centered Carousel Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <rect x="2" y="5" width="16" height="14" rx="2" />
+                                                <path d="M22 8v11a2 2 0 0 1-2 2H6" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Carousel Cover design -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold">Mental Health</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">Is Social Media Making Us Anti-Social?</h5>
+                                        <span class="text-[9px] text-pink font-bold">Swipe Left ➔</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">Is Social Media Making Us Anti-Social?</h4>
+                                    <a href="https://www.instagram.com/p/C9hXbvuSmMH/?utm_source=ig_embed&ig_rid=17f17b08-447d-449d-ba17-150c391ce67e" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+ 
+                            <!-- Carousel 2 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/C6a9_2fSyYQ/?utm_source=ig_embed&ig_rid=eb06cbbb-6c67-43db-befd-5ef051190ac9" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(255,103,255,0.35)] hover:border-white/20">
+                                    <!-- Rotating/shifting gradient from pink/magenta to blue -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#FF67FF] to-[#2C48D4] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:-rotate-1 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Slide Indicator Overlay -->
+                                    <div class="absolute top-4 right-4 bg-black/55 backdrop-blur-md px-2.5 py-1 rounded-full text-[9px] font-mono tracking-widest text-white/80 z-10 select-none">
+                                        1/4 SLIDES
+                                    </div>
+                                    
+                                    <!-- Centered Carousel Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <rect x="2" y="5" width="16" height="14" rx="2" />
+                                                <path d="M22 8v11a2 2 0 0 1-2 2H6" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Carousel Cover design -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[9px] text-[#00AEEF] uppercase tracking-widest block mb-0.5 font-bold">Fitness System</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">4 Major Pillars of Fitness</h5>
+                                        <span class="text-[9px] text-pink font-bold">Swipe Left ➔</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">4 Major Pillars of Fitness</h4>
+                                    <a href="https://www.instagram.com/p/C6a9_2fSyYQ/?utm_source=ig_embed&ig_rid=eb06cbbb-6c67-43db-befd-5ef051190ac9" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+ 
+                            <!-- Carousel 3 Card -->
+                            <div class="flex flex-col gap-4 group">
+                                <a href="https://www.instagram.com/p/C6DxuuhyK3b/?utm_source=ig_embed&ig_rid=4e630f45-2470-4758-bafb-655f4020fac4" target="_blank" rel="noopener noreferrer" class="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-zinc-950 border border-white/5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(255,103,255,0.35)] hover:border-white/20">
+                                    <!-- Rotating/shifting gradient from pink/magenta to blue -->
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-[#FF67FF] to-[#2C48D4] opacity-75 group-hover:opacity-90 group-hover:scale-110 group-hover:rotate-1 transition-all duration-500 ease-out"></div>
+                                    <!-- Decorative overlay grid pattern -->
+                                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] mix-blend-overlay"></div>
+                                    <div class="absolute inset-0 bg-radial-gradient from-transparent to-black/40 z-0"></div>
+                                    
+                                    <!-- Slide Indicator Overlay -->
+                                    <div class="absolute top-4 right-4 bg-black/55 backdrop-blur-md px-2.5 py-1 rounded-full text-[9px] font-mono tracking-widest text-white/80 z-10 select-none">
+                                        1/6 SLIDES
+                                    </div>
+                                    
+                                    <!-- Centered Carousel Icon -->
+                                    <div class="absolute z-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                        <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl group-hover:bg-white/20">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <rect x="2" y="5" width="16" height="14" rx="2" />
+                                                <path d="M22 8v11a2 2 0 0 1-2 2H6" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Carousel Cover design -->
+                                    <div class="absolute bottom-4 left-4 right-4 z-10 text-left select-none bg-black/60 p-3 rounded-xl backdrop-blur-md border border-white/5">
+                                        <span class="font-mono text-[8px] text-pink uppercase tracking-widest font-bold">Body Building</span>
+                                        <h5 class="font-display font-extrabold text-xs text-white uppercase tracking-tight">Strength Training — Why Is It Important?</h5>
+                                        <span class="text-[9px] text-[#00AEEF] font-bold">Swipe Left ➔</span>
+                                    </div>
+                                </a>
+                                <div class="flex justify-between items-start px-2">
+                                    <h4 class="font-display font-bold text-white text-base">Strength Training — Why Is It Important?</h4>
+                                    <a href="https://www.instagram.com/p/C6DxuuhyK3b/?utm_source=ig_embed&ig_rid=4e630f45-2470-4758-bafb-655f4020fac4" target="_blank" rel="noopener noreferrer" class="font-sans text-[11px] text-pink hover:underline uppercase tracking-wide shrink-0">View on Instagram ↗</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: THE PROCESS (id="process") -->
+        <section id="process" class="py-24 max-w-7xl mx-auto px-6 md:px-12 select-text">
+            <div class="mb-16 scroll-reveal">
+                <span class="font-handwritten text-[#00AEEF] text-2xl font-semibold block mb-2">→ How We Did It</span>
+                <h2 class="font-display font-extrabold text-white uppercase text-2xl sm:text-3xl md:text-4xl tracking-tight leading-tight">
+                    Month by month. <br />No surprises.
+                </h2>
+            </div>
+
+            <!-- Vertical Timeline Stack -->
+            <div class="relative max-w-4xl border-l border-white/10 ml-4 md:ml-8 pl-8 md:pl-12 space-y-16 py-4">
+                <!-- Step 1 Card -->
+                <div class="relative timeline-step scroll-reveal">
+                    <!-- Step Marker Node -->
+                    <div class="absolute left-[-41px] md:left-[-57px] top-1.5 w-[24px] h-[24px] md:w-[32px] md:h-[32px] rounded-full bg-gradient-to-tr from-[#2C48D4] via-[#00AEEF] to-[#FF67FF] flex items-center justify-center border border-black z-10 shadow-lg">
+                        <span class="font-display font-extrabold text-[10px] md:text-xs text-white">1</span>
+                    </div>
+
+                    <div class="bg-card border border-white/5 rounded-[24px] p-6 md:p-8 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.05)] transition-all duration-300">
+                        <span class="font-handwritten text-[#FF67FF] text-xl font-bold block mb-1">Month 1</span>
+                        <h3 class="font-display font-extrabold text-[#FFFFFF] text-xl md:text-2xl uppercase tracking-tight mb-4">Foundation</h3>
+                        <p class="font-sans text-base text-[#FFFFFF]/75 leading-relaxed font-light">
+                            We started with the audience and the brand. Rashi built the full visual identity system — palette, typography, and design direction. Priyanka mapped the content pillars and built the editorial calendar. Before anything went live, the strategy was solid.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2 Card -->
+                <div class="relative timeline-step scroll-reveal" style="transition-delay: 0.15s;">
+                    <!-- Step Marker Node -->
+                    <div class="absolute left-[-41px] md:left-[-57px] top-1.5 w-[24px] h-[24px] md:w-[32px] md:h-[32px] rounded-full bg-gradient-to-tr from-[#2C48D4] via-[#00AEEF] to-[#FF67FF] flex items-center justify-center border border-black z-10 shadow-lg">
+                        <span class="font-display font-extrabold text-[10px] md:text-xs text-white">2</span>
+                    </div>
+
+                    <div class="bg-card border border-white/5 rounded-[24px] p-6 md:p-8 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.05)] transition-all duration-300">
+                        <span class="font-handwritten text-[#FF67FF] text-xl font-bold block mb-1">Month 2</span>
+                        <h3 class="font-display font-extrabold text-[#FFFFFF] text-xl md:text-2xl uppercase tracking-tight mb-4">Build</h3>
+                        <p class="font-sans text-base text-[#FFFFFF]/75 leading-relaxed font-light">
+                            The feed went live. Templates were built and handed over to a repeatable system. Every post was crafted to educate without overwhelming — useful enough to save, clear enough to understand on first read.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3 Card -->
+                <div class="relative timeline-step scroll-reveal" style="transition-delay: 0.25s;">
+                    <!-- Step Marker Node -->
+                    <div class="absolute left-[-41px] md:left-[-57px] top-1.5 w-[24px] h-[24px] md:w-[32px] md:h-[32px] rounded-full bg-gradient-to-tr from-[#2C48D4] via-[#00AEEF] to-[#FF67FF] flex items-center justify-center border border-black z-10 shadow-lg">
+                        <span class="font-display font-extrabold text-[10px] md:text-xs text-white">3</span>
+                    </div>
+
+                    <div class="bg-card border border-white/5 rounded-[24px] p-6 md:p-8 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.05)] transition-all duration-300">
+                        <span class="font-handwritten text-[#FF67FF] text-xl font-bold block mb-1">Month 3</span>
+                        <h3 class="font-display font-extrabold text-[#FFFFFF] text-xl md:text-2xl uppercase tracking-tight mb-4">Grow and Refine</h3>
+                        <p class="font-sans text-base text-[#FFFFFF]/75 leading-relaxed font-light">
+                            With consistent output, the data started talking. We refined what was resonating, doubled down on the content types driving reach, and kept the posting rhythm tight. No weeks off. No dropped balls.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 4 Card -->
+                <div class="relative timeline-step scroll-reveal" style="transition-delay: 0.35s;">
+                    <!-- Step Marker Node -->
+                    <div class="absolute left-[-41px] md:left-[-57px] top-1.5 w-[24px] h-[24px] md:w-[32px] md:h-[32px] rounded-full bg-gradient-to-tr from-[#2C48D4] via-[#00AEEF] to-[#FF67FF] flex items-center justify-center border border-black z-10 shadow-lg">
+                        <span class="font-display font-extrabold text-[10px] md:text-xs text-white">4</span>
+                    </div>
+
+                    <div class="bg-card border border-white/5 rounded-[24px] p-6 md:p-8 hover:border-pink/30 hover:shadow-[0_10px_30px_rgba(255,103,255,0.05)] transition-all duration-300">
+                        <span class="font-handwritten text-[#FF67FF] text-xl font-bold block mb-1">Month 4+</span>
+                        <h3 class="font-display font-extrabold text-[#FFFFFF] text-xl md:text-2xl uppercase tracking-tight mb-4">Sustained Growth</h3>
+                        <p class="font-sans text-base text-[#FFFFFF]/75 leading-relaxed font-light">
+                            Organic reach crossed 3,500 accounts per month. Impressions hit 15,460. Reels grew from 417 to 1,174. Stories from 287 to 678. The system was working — and it kept working.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: ORGANIC RESULTS DEEP DIVE -->
+        <section class="bg-card w-full py-24 select-text border-y border-white/5 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-16 scroll-reveal text-center">
+                    <span class="font-handwritten text-pink text-2xl font-semibold block mb-2">→ The Full Picture</span>
+                    <h2 class="font-display font-extrabold text-white text-2xl sm:text-3xl md:text-4xl uppercase leading-tight tracking-tight">
+                        Before and after. Side by side.
+                    </h2>
+                </div>
+
+
+
+                <!-- Verified Organic Performance Insights Dashboard -->
+                <div class="max-w-4xl mx-auto scroll-reveal flex flex-col items-center gap-6 pt-4">
+                    <div class="font-mono text-[10px] text-[#00AEEF] uppercase tracking-widest bg-[#00AEEF]/10 px-4 py-1.5 rounded-full border border-[#00AEEF]/20 font-bold">
+                        📈 Verified Performance Insights
+                    </div>
+                    
+                    <!-- Comparative Dashboard Card -->
+                    <div class="relative w-full rounded-2xl bg-[#0c0c16] border border-pink/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] p-6 md:p-8"
+                         style="box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 40px rgba(255,103,255,0.15)">
+                        
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-6 mb-6 w-full">
+                            <div>
+                                <h3 class="font-display font-extrabold text-lg sm:text-xl text-white uppercase">Instagram Growth Analytics</h3>
+                                <p class="text-xs text-[#FFFFFF]/45 font-mono uppercase tracking-wider mt-1">Verified organic performance reporting</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span class="font-mono text-xs text-emerald-400 uppercase font-bold tracking-widest">Active Curation Result</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch w-full">
+                            <!-- Left: Status Before -->
+                            <div class="bg-black/40 border border-white/5 rounded-2xl p-5 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span class="font-mono text-[10px] text-white/50 uppercase tracking-widest font-bold">Before Strategy</span>
+                                        <span class="px-2 py-0.5 rounded bg-white/5 text-white/40 font-mono text-[8px] uppercase font-bold">Uncurated Feed</span>
+                                    </div>
+                                    <div class="space-y-4 text-left">
+                                        <div>
+                                            <span class="text-white/40 text-xs font-mono block">Accounts Reached</span>
+                                            <span class="font-display font-bold text-2xl text-white/70">1,018</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-white/40 text-xs font-mono block">Impressions</span>
+                                            <span class="font-display font-bold text-xl text-white/60">2,381</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-t border-white/5 pt-4 mt-6">
+                                    <h4 class="text-xs font-mono text-white/30 uppercase tracking-wider mb-2 text-left">Audience Split</h4>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <div class="flex-1">
+                                            <div class="flex justify-between text-[10px] font-mono mb-1 text-white/40">
+                                                <span>Followers</span>
+                                                <span>72.5%</span>
+                                            </div>
+                                            <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                                <div class="h-full bg-white/20 rounded-full" style="width: 72.5%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Status After -->
+                            <div class="bg-gradient-to-br from-[#0e0e1a] to-[#2C48D4]/10 border border-[#00AEEF]/30 rounded-2xl p-5 flex flex-col justify-between shadow-[inset_0_0_20px_rgba(0,174,239,0.05)]">
+                                <div>
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span class="font-mono text-[10px] text-[#00AEEF] uppercase tracking-widest font-bold">Active Branding</span>
+                                        <span class="px-2.5 py-0.5 rounded bg-[#00AEEF]/10 text-[#00AEEF] font-mono text-[8px] uppercase font-bold border border-[#00AEEF]/20">Active Growth</span>
+                                    </div>
+                                    <div class="space-y-4 text-left">
+                                        <div>
+                                            <span class="text-[#00AEEF] text-xs font-mono block">Accounts Reached</span>
+                                            <div class="flex items-baseline gap-2">
+                                                <span class="font-display font-black text-3xl text-transparent bg-clip-text bg-gradient-to-r from-[#00AEEF] to-[#FF67FF]">3,555</span>
+                                                <span class="text-xs font-mono text-emerald-400 font-bold">(+249%)</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="text-pink text-xs font-mono block">Impressions</span>
+                                            <div class="flex items-baseline gap-2">
+                                                <span class="font-display font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-pink to-[#FF67FF]">15,460</span>
+                                                <span class="text-xs font-mono text-emerald-400 font-bold">(+547%)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-t border-white/10 pt-4 mt-6">
+                                    <h4 class="text-xs font-mono text-pink/80 uppercase tracking-wider mb-2 text-left">Audience Split (New Reach)</h4>
+                                    <div class="flex items-center justify-between gap-4">
+                                        <div class="flex-1">
+                                            <div class="flex justify-between text-[10px] font-mono mb-1">
+                                                <span class="text-[#00AEEF]">Non-Followers (New Audience)</span>
+                                                <span class="text-white">32.9%</span>
+                                            </div>
+                                            <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-[#00AEEF] to-[#FF67FF] rounded-full" style="width: 32.9%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mini comparative analytics lines -->
+                        <div class="mt-8 border-t border-white/10 pt-6 w-full">
+                            <h4 class="text-xs font-mono text-[#00AEEF] uppercase tracking-widest font-bold mb-4 text-left">Content Performance Benchmarks</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                <div class="p-3 bg-black/35 rounded-xl border border-white/5">
+                                    <span class="text-[10px] font-mono text-white/40 block">Profile Visits</span>
+                                    <span class="font-display font-extrabold text-sm md:text-base text-white mt-1 block">+3,333</span>
+                                </div>
+                                <div class="p-3 bg-black/35 rounded-xl border border-[#00AEEF]/20">
+                                    <span class="text-[10px] font-mono text-white/40 block">Reels Created</span>
+                                    <span class="font-display font-extrabold text-sm md:text-base text-[#00AEEF] mt-1 block">11</span>
+                                </div>
+                                <div class="p-3 bg-black/35 rounded-xl border border-white/5">
+                                    <span class="text-[10px] font-mono text-white/40 block">Story Views</span>
+                                    <span class="font-display font-extrabold text-sm md:text-base text-pink mt-1 block">67</span>
+                                </div>
+                                <div class="p-3 bg-black/35 rounded-xl border border-white/5">
+                                    <span class="text-[10px] font-mono text-white/40 block">Live Sessions</span>
+                                    <span class="font-display font-extrabold text-sm md:text-base text-purple-400 mt-1 block">11</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 9: TESTIMONIAL (id="testimonial") -->
+        <section id="testimonial" class="py-24 relative select-text w-full">
+            <!-- Background Blob Glow strictly limits at 15% opacity -->
+            <div class="absolute inset-0 bg-gradient-to-tr from-[#1D1D7F]/20 via-[#080810]/40 to-[#FF67FF]/10 opacity-75 pointer-events-none z-0"></div>
+
+            <div class="relative z-10 max-w-5xl mx-auto px-6 md:px-12 flex flex-col items-center text-center">
+                <span class="font-handwritten text-[#00AEEF] text-2xl font-semibold block mb-4">→ What Dr. Sheela Said</span>
+                
+                <!-- Staggered testimonial quote mark first -->
+                <span class="font-display font-extrabold text-[120px] bg-gradient-to-b from-[#FF67FF] to-[#2C48D4] bg-clip-text text-transparent leading-none select-none h-16 inline-block scroll-reveal">
+                    "
+                </span>
+
+                <!-- Testimonial Quote Speech -->
+                <blockquote class="font-sans font-light text-white text-lg sm:text-xl md:text-[23px] leading-relaxed max-w-[760px] pb-8 relative scroll-reveal" style="transition-delay: 0.15s;">
+                    I am highly satisfied with the services and especially value the excellent communication. You have met my expectations, and I have even recommended you to several others. While I would appreciate slightly better synchronization with my voice in copywriting, working with you both has been an absolute pleasure!
+                </blockquote>
+
+                <!-- Author Profile and Rating Star -->
+                <div class="flex flex-col items-center gap-4 scroll-reveal" style="transition-delay: 0.3s;">
+                    <div class="w-16 h-16 rounded-full border-2 border-pink/30 overflow-hidden shadow-xl group">
+                        <img src="https://siyahi.in/wordpress/wp-content/uploads/2016/09/Dr-Sheela-Nambiar.jpeg" class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-500" referrerpolicy="no-referrer" alt="Dr. Sheela Nambiar MD" />
+                    </div>
+                    <div>
+                        <cite class="font-display font-bold text-lg text-white not-italic tracking-wide uppercase leading-none block">Dr. Sheela Nambiar</cite>
+                        <span class="text-xs text-white/40 font-mono tracking-wider uppercase block mt-1">OB/GYN, Lifestyle Medicine Physician, Positive Psychology Practitioner</span>
+                    </div>
+
+                    <!-- Beautiful 5 Star Grid mapping via gradient star paths -->
+                    <div class="flex items-center gap-1 text-[#FF67FF] mt-2 select-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+        <!-- SECTION 10: TOOLS AND SKILLS -->
+        <section class="bg-card w-full py-24 select-text border-y border-white/5 relative">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+                <div class="mb-16 scroll-reveal md:text-center">
+                    <span class="font-handwritten text-[#00AEEF] text-2xl font-semibold block mb-2">→ What We Used</span>
+                    <h2 class="font-display font-extrabold text-white text-2xl sm:text-3xl md:text-4xl uppercase leading-tight tracking-tight">
+                        The toolkit behind the results.
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 max-w-4xl mx-auto pt-6">
+                    <!-- Priyanka's column on Left -->
+                    <div class="flex flex-col gap-6 scroll-reveal">
+                        <span class="font-handwritten text-pink text-2xl font-bold block leading-none select-none">Priyanka</span>
+                        
+                        <!-- Pills tags grid for strategist -->
+                        <div class="flex flex-wrap gap-2.5">
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Instagram Strategy</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Personal Branding</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Content Systems</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Goals Strategy</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Content Planning</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Community Management</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Analytics and Reporting</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Caption Writing</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-pink/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-pink/45 transition-colors">Hashtag Research</span>
+                        </div>
+                    </div>
+
+                    <!-- Rashi's column on Right -->
+                    <div class="flex flex-col gap-6 scroll-reveal" style="transition-delay: 0.25s;">
+                        <span class="font-handwritten text-[#00AEEF] text-2xl font-bold block leading-none select-none">Rashi</span>
+                        
+                        <!-- Pills tags grid for designer -->
+                        <div class="flex flex-wrap gap-2.5">
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Design Direction</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Brand Identity</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Content Design</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Infographics</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Reel Covers</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Story Templates</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Carousel Design</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Visual Systems</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Canva</span>
+                            <span class="px-4.5 py-2.5 rounded-full border border-[#00AEEF]/15 bg-black/40 text-xs font-sans text-white/90 shadow-sm leading-none hover:border-[#00AEEF]/45 transition-colors">Figma</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 11: WHAT THIS TAUGHT US -->
+        <section class="py-24 max-w-7xl mx-auto px-6 md:px-12 select-text">
+            <div class="mb-6 scroll-reveal">
+                <span class="font-handwritten text-[#FF67FF] text-2xl font-semibold block mb-2">→ The Takeaway</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+                <!-- Left Column Header layout -->
+                <div class="lg:col-span-4 scroll-reveal">
+                    <h2 class="font-display font-extrabold text-white text-2xl sm:text-3xl md:text-4xl uppercase leading-tight tracking-tight">
+                        Brand identity first. <br />Content second. <br />Always.
+                    </h2>
+                </div>
+
+                <!-- Right Column Body layout -->
+                <div class="lg:col-span-8 font-sans text-base md:text-[17px] text-[#FFFFFF]/70 leading-[1.85] space-y-6 scroll-reveal" style="transition-delay: 0.25s;">
+                    <p>
+                        Dr. Sheela's account reminded us why brand identity work matters before content work. The moment we had a clear visual system and content direction, everything else became faster, more consistent, and more effective.
+                    </p>
+                    <p>
+                        It also taught us something we now tell every client: when your content looks like you and sounds like you, your audience knows exactly who they are following. That trust compounds. Every post, every story, every reel adds to it.
+                    </p>
+                    <p class="font-bold text-[#FF67FF] text-lg sm:text-xl md:text-2xl pt-4 font-handwritten">
+                        "That is how 1,018 accounts becomes 3,555. And how 15,000 impressions becomes the new floor, not the ceiling."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 12: CTA -->
+        <section class="max-w-7xl mx-auto px-6 md:px-12 pb-24 md:pb-32 select-text pt-12">
+            <!-- Background Blob Glow strictly limits at highest percentage for maximum dramatic closing energy -->
+            <div class="relative text-center py-20 bg-gradient-to-r from-[#2C48D4]/25 via-[#FF67FF]/15 to-black border border-white/10 rounded-[32px] overflow-hidden px-6 md:px-12 scroll-reveal">
+                
+                <!-- Closing Glowing Bloom Backdrop -->
+                <div class="absolute inset-0 bg-[#080810]/40 backdrop-blur-sm pointer-events-none z-0"></div>
+
+                <div class="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
+                    <span class="font-handwritten text-pink text-2xl font-semibold block mb-4">→ Ready?</span>
+                    
+                    <h2 class="font-display font-extrabold text-[#FFFFFF] text-2xl sm:text-3xl md:text-4xl leading-tight uppercase tracking-tight mb-6">
+                        Want results like <br class="sm:hidden" />this <br class="hidden sm:inline" />for your brand?
+                    </h2>
+
+                    <p class="font-sans text-base sm:text-lg text-[#FFFFFF]/65 leading-relaxed max-w-[560px] mb-10 font-light">
+                        We take on a limited number of clients per quarter. If you have been putting your brand off, this is the nudge.
+                    </p>
+
+                    <!-- Double buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+                        <!-- Primary with Pink shadow hover glow -->
+                        <a href="https://calendly.com/pixelsnprompts/30min" target="_blank" rel="noopener noreferrer" class="px-8 py-4 bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] text-white font-display font-bold text-xs uppercase tracking-widest rounded-full hover:shadow-[0_0_25px_rgba(255,103,255,0.5)] transition-all duration-300 w-full sm:w-auto text-center cursor-pointer block">
+                            Book a Free Call →
+                        </a>
+
+                        <!-- Secondary -->
+                        <a href="/index.html#work" class="px-8 py-4 bg-white/5 border border-white/10 text-white font-sans text-xs uppercase tracking-widest rounded-full hover:bg-white/10 transition-all duration-300 w-full sm:w-auto text-center cursor-pointer block">
+                            ← Back to All Work
+                        </a>
+                    </div>
+
+                    <p class="font-sans text-[12px] italic text-[#FFFFFF]/25 mt-8 font-light select-none">
+                        No pitch. No pressure. Just an honest conversation about your brand and whether we are the right people to help.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#0a0a14] border-t border-white/5 py-12 px-6 md:px-12 text-center relative z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+            <!-- Left Logo brand -->
+            <a href="/index.html" class="flex items-center gap-3 font-display font-extrabold text-lg tracking-tighter text-[#00AEEF] hover:opacity-95 transition-opacity">
+                <svg className="w-8 h-8" class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="logoGradSheelaFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#00CEFF" />
+          <stop offset="35%" stopColor="#2E4AEC" />
+          <stop offset="75%" stopColor="#9C20FE" />
+          <stop offset="100%" stopColor="#E23EFF" />
+        </linearGradient>
+        <pattern id="logoGridSheelaFooter" width="4.1667" height="4.1667" patternUnits="userSpaceOnUse">
+          <rect width="4.1667" height="4.1667" fill="none" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="0.5" />
+        </pattern>
+        <clipPath id="logoClipSheelaFooter">
+          <circle cx="50" cy="50" r="46" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#logoClipSheelaFooter)">
+        <circle cx="50" cy="50" r="46" fill="url(#logoGradSheelaFooter)" />
+        <rect x="0" y="0" width="100" height="100" fill="url(#logoGridSheelaFooter)" />
+      </g>
+      <rect x="50.3500" y="25.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="29.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="29.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="33.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="37.8500" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="37.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="33.6833" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="37.8500" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="42.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="29.5167" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="33.6833" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="37.8500" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="62.8500" y="46.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="29.5167" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="33.6833" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="58.6833" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="62.8500" y="50.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="29.5167" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="54.5167" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="58.6833" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="62.8500" y="54.5167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="54.5167" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="58.6833" y="58.6833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="54.5167" y="62.8500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="50.3500" y="67.0167" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="71.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="46.1833" y="71.1833" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+      <rect x="42.0167" y="75.3500" width="3.4667" height="3.4667" rx="0.5" fill="white" />
+    </svg>
+                <span class="bg-gradient-to-r from-[#2C48D4] to-[#00AEEF] bg-clip-text text-transparent">Pixels & Prompts</span>
+            </a>
+
+            <!-- Center menu -->
+            <div class="flex flex-wrap items-center justify-center gap-6 md:gap-8 font-sans text-sm text-[#FFFFFF]/45">
+                <a href="/index.html#work" class="hover:text-white transition-colors duration-200">Case Studies</a>
+                <span class="text-white/10">|</span>
+                <a href="/index.html" class="hover:text-white transition-colors duration-200">Home</a>
+                <span class="text-white/10">|</span>
+                <a href="https://calendly.com/pixelsnprompts/30min" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors duration-200">Book a Call</a>
+            </div>
+
+            <!-- Right credits -->
+            <div class="font-sans text-sm text-[#FFFFFF]/25 font-light">
+                © 2026 Pixels & Prompts
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT ANIMATION LOOPS & TRIGGERS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. Initial Hero staggered text reveal
+            const staggerLines = document.querySelectorAll('.stagger-line');
+            staggerLines.forEach((line, idx) => {
+                setTimeout(() => {
+                    line.style.opacity = '1';
+                    line.style.transform = 'translateY(0)';
+                }, (idx + 1) * 150);
+            });
+
+            // 2. Custom Cursor (10px dot expands to 36px ring)
+            const cursorDot = document.getElementById('cursor-dot');
+            const cursorRing = document.getElementById('cursor-ring');
+            
+            if (cursorDot && cursorRing) {
+                document.addEventListener('mousemove', (e) => {
+                    cursorDot.style.left = e.clientX + 'px';
+                    cursorDot.style.top = e.clientY + 'px';
+                    
+                    // Smooth lagging animation on outer ring
+                    cursorRing.animate({
+                        left: e.clientX + 'px',
+                        top: e.clientY + 'px'
+                    }, { duration: 150, fill: "forwards" });
+                });
+
+                // Target links/buttons hover trigger
+                const interactables = document.querySelectorAll('a, button, input, textarea, select, [onclick]');
+                interactables.forEach(node => {
+                    node.addEventListener('mouseenter', () => {
+                        cursorDot.style.width = '36px';
+                        cursorDot.style.height = '36px';
+                        cursorDot.style.backgroundColor = 'transparent';
+                        cursorDot.style.border = '1.5px solid var(--pink)';
+                        cursorRing.style.transform = 'translate(-50%, -50%) scale(1.35)';
+                        cursorRing.style.borderColor = 'var(--pink)';
+                    });
+                    
+                    node.addEventListener('mouseleave', () => {
+                        cursorDot.style.width = '10px';
+                        cursorDot.style.height = '10px';
+                        cursorDot.style.backgroundColor = 'var(--pink)';
+                        cursorDot.style.border = 'none';
+                        cursorRing.style.transform = 'translate(-50%, -50%) scale(1)';
+                        cursorRing.style.borderColor = 'var(--pink)';
+                    });
+                });
+            }
+
+            // 3. Scroll Reveal intersection observer
+            const revealNodes = document.querySelectorAll('.scroll-reveal');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry, idx) => {
+                    if (entry.isIntersecting) {
+                        // Apply staggered visual threshold entries
+                        setTimeout(() => {
+                            entry.target.classList.add('active');
+                        }, idx * 60);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            revealNodes.forEach(node => revealObserver.observe(node));
+
+            // 4. Count Up Stats on Scroll observer
+            const statIndicators = document.querySelectorAll('.count-up');
+            
+            const animateCountUp = (node) => {
+                const target = parseInt(node.getAttribute('data-target'), 10);
+                const duration = 1800; // 1.8s
+                let startTime = null;
+                
+                const step = (currentTime) => {
+                    if (!startTime) startTime = currentTime;
+                    const progress = Math.min((currentTime - startTime) / duration, 1);
+                    
+                    // Easing cubic easeOut formula
+                    const easeOutProgress = 1 - Math.pow(1 - progress, 3);
+                    const currentVal = Math.floor(easeOutProgress * target);
+                    
+                    node.innerText = currentVal.toLocaleString();
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        node.innerText = target.toLocaleString();
+                    }
+                };
+                requestAnimationFrame(step);
+            };
+
+            const statsObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCountUp(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            statIndicators.forEach(elem => statsObserver.observe(elem));
+
+            // 5. Scroll Progress Bar at very top of screen
+            const progressBar = document.getElementById('scroll-progress-bar');
+            const backToTopBtn = document.getElementById('back-to-top');
+            const stickyHeader = document.getElementById('sticky-header');
+
+            window.addEventListener('scroll', () => {
+                const windScroll = document.documentElement.scrollTop || document.body.scrollTop;
+                const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (windScroll / docHeight) * 100;
+                
+                if (progressBar) {
+                    progressBar.style.width = scrolled + '%';
+                }
+
+                // Sticky Header background morphing
+                if (stickyHeader) {
+                    if (window.scrollY > 50) {
+                        stickyHeader.style.backgroundColor = 'rgba(8, 8, 16, 0.92)';
+                        stickyHeader.style.backdropFilter = 'blur(18px)';
+                        stickyHeader.style.borderBottom = '1px solid rgba(255, 255, 255, 0.07)';
+                    } else {
+                        stickyHeader.style.backgroundColor = 'transparent';
+                        stickyHeader.style.backdropFilter = 'none';
+                        stickyHeader.style.borderBottom = 'none';
+                    }
+                }
+
+                // Back to top button appear trigger
+                if (backToTopBtn) {
+                    if (window.scrollY > 300) {
+                        backToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+                        backToTopBtn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-all');
+                    } else {
+                        backToTopBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                        backToTopBtn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-all');
+                    }
+                }
+            });
+
+            // 6. Smooth Scroll Back up to the top
+            if (backToTopBtn) {
+                backToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
+
+        // 7. Interactive Switcher for Reels | Infographics | Carousels
+        function changeShowcaseTab(tabIdx) {
+            const tabs = ['reels', 'infographics', 'carousels'];
+            
+            // Toggle active trigger buttons styling classes
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach((btn, idx) => {
+                if (idx === tabIdx) {
+                    btn.className = "tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-300 bg-gradient-to-r from-[#FF67FF] to-[#2C48D4] text-white";
+                } else {
+                    btn.className = "tab-btn px-6 py-2.5 rounded-full text-xs font-display font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all duration-200 bg-white/5 border border-white/10 text-[#FFFFFF]/70 hover:opacity-100 hover:text-white";
+                }
+            });
+
+            // Iterate contents visibility
+            tabs.forEach((tab, idx) => {
+                const pane = document.getElementById('tab-content-' + tab);
+                if (pane) {
+                    if (idx === tabIdx) {
+                        pane.classList.remove('hidden');
+                        setTimeout(() => {
+                            pane.classList.remove('opacity-0');
+                            pane.classList.add('opacity-100');
+                        }, 50);
+                    } else {
+                        pane.classList.add('opacity-0');
+                        pane.classList.remove('opacity-100');
+                        pane.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // 9. Lightbox Functions for Zooming Handpicked Visual Grids
+        function openLightbox(src, altText) {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            const caption = document.getElementById('lightbox-caption');
+            if (modal && img && caption) {
+                img.src = src;
+                img.alt = altText;
+                caption.textContent = altText;
+                
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                // Trigger smooth fade-in and scale-up animation
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.classList.add('opacity-100');
+                    img.classList.remove('scale-95');
+                    img.classList.add('scale-100');
+                }, 50);
+                
+                // Disable scrolling on background body
+                document.body.classList.add('overflow-hidden');
+            }
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            if (modal && img) {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                img.classList.remove('scale-100');
+                img.classList.add('scale-95');
+                
+                setTimeout(() => {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    // Restore scrolling
+                    document.body.classList.remove('overflow-hidden');
+                }, 300);
+            }
+        }
+
+        // Close on ESC key or clicking outside the image
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+        
+        document.getElementById('lightbox-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+    </script>
+
+
+    <!-- Lightbox Modal for Pixel-perfect Grid Zooming -->
+    <div id="lightbox-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[9999] hidden flex-col justify-center items-center p-4 transition-all duration-300 opacity-0 select-none">
+        <!-- Close button top right -->
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 md:top-8 md:right-12 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all duration-200 cursor-pointer text-xl md:text-2xl font-light leading-none z-50 shadow-md flex items-center justify-center w-12 h-12" aria-label="Close Preview">
+            ✕
+        </button>
+        <!-- Image Container -->
+        <div class="relative max-w-5xl max-h-[85vh] flex flex-col justify-center items-center drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+            <img id="lightbox-img" src="" class="max-w-full max-h-[75vh] md:max-h-[80vh] object-contain rounded-xl border border-white/10 shadow-2xl scale-95 transition-transform duration-300" alt="Expanded Instagram Feed Grid" />
+            <!-- Caption below -->
+            <p id="lightbox-caption" class="text-white/80 font-sans text-xs md:text-sm mt-4 text-center max-w-xl font-light leading-relaxed select-text"></p>
+        </div>
+    </div>
+</body>
+</html>
