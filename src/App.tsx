@@ -46,9 +46,9 @@ const SERVICE_EXTRAS = [
   {
     handwrittenNote: "Say goodbye to content panic. This is your entire playbook.",
     deliverables: [
-      "30 days of bespoke design templates",
-      "Custom caption worksheets & pillars",
-      "Evergreen caption blueprints for socials"
+      "30 days of bespoke content calendar with design",
+      "Custom scripts, caption worksheets & pillars",
+      "Evergreen keyword and hashtag blueprints for socials"
     ],
     bgDecoration: "bg-gradient-to-br from-[#00AEEF]/10 to-transparent",
     accentColor: "#00AEEF",
