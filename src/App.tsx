@@ -68,7 +68,7 @@ const SERVICE_EXTRAS = [
   {
     handwrittenNote: "No wasted budgets. Every single dollar is tracked and optimized.",
     deliverables: [
-      "Meta/TikTok Pixel & conversion maps",
+      "Meta/Ads Pixel & conversion maps",
       "High-converting ad variation design",
       "Direct daily monitoring & big optimizations"
     ],
